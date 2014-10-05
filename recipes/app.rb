@@ -13,9 +13,11 @@ directory app_dir
 # Top level files
 
 # TK
-template "#{app_dir}/.kitchen.yml" do
-  source 'kitchen.yml.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
+%w[ kitchen.yml kitchen.cloud.yml ].each do |k|
+  template "#{app_dir}/.#{k}" do
+    source '#{k}.erb'
+    helpers(ChefDK::Generator::TemplateHelper)
+  end
 end
 
 # README
