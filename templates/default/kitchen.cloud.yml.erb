@@ -9,21 +9,13 @@ driver_config:
   openstack_tenant: <\%= ENV['OS_TENANT_NAME'] %>
   floating_ip_pool: <\%= ENV['OS_FLOATING_IP_POOL'] %>
   flavor_ref: <\%= ENV['OS_FLAVOR_REF'] %>
-  # Only use the following if you need to open up firewall ports
-  security_groups:
-    - <\%= ENV['OS_SECURITY_GROUP_NO_FIREWALL'] %>
 
 provisioner:
   name: chef_solo
   attributes:
-    mysql:
-      server_root_password: rootpass
-      server_debian_password: debpass
-      server_repl_password: replpass
     authorization:
       sudo:
         users:
-          - vagrant
           - centos
           - ubuntu
           - fedora
