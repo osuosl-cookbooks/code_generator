@@ -26,10 +26,12 @@ cookbook_file "#{cookbook_dir}/Berksfile" do
 end
 
 # TK
-template "#{cookbook_dir}/.kitchen.yml" do
-  source 'kitchen.yml.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
-  action :create_if_missing
+%w[kitchen.yml kitchen.cloud.yml].each do |k|
+  template "#{cookbook_dir}/.#{k}" do
+    source "#{k}.erb"
+    helpers(ChefDK::Generator::TemplateHelper)
+    action :create_if_missing
+  end
 end
 
 # Recipes
