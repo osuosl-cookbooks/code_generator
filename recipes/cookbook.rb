@@ -25,6 +25,12 @@ cookbook_file "#{cookbook_dir}/Berksfile" do
   action :create_if_missing
 end
 
+# rubocop
+cookbook_file "#{cookbook_dir}/.rubocop.yml" do
+  source "rubocop.yml"
+  action :create_if_missing
+end
+
 # TK
 %w[kitchen.yml kitchen.cloud.yml].each do |k|
   template "#{cookbook_dir}/.#{k}" do
