@@ -15,7 +15,7 @@ directory app_dir
 # TK
 %w(kitchen.yml kitchen.cloud.yml).each do |k|
   template "#{app_dir}/.#{k}" do
-    source '#{k}.erb'
+    source "#{k}.erb"
     helpers(ChefDK::Generator::TemplateHelper)
   end
 end
