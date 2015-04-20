@@ -1,8 +1,8 @@
 name             'code_generator'
-maintainer       'Chef Software, Inc.'
-maintainer_email 'dev@getchef.com'
-license          'Apache 2 License'
-description      'Generates Chef code for Chef DK'
-long_description 'Generates Chef code for Chef DK'
+maintainer       'Oregon State University'
+maintainer_email 'systems@osuosl.org'
+license          'All Rights Reserved'
+description      'Generates Chef code for the OSUOSL'
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.1.0'
 
