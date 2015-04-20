@@ -10,13 +10,14 @@ unless File.extname(template_filename) == '.erb'
   template_filename = "#{template_filename}.erb"
 end
 
-template_path = File.join(cookbook_dir, 'templates', 'default', template_filename)
+template_path = File.join(cookbook_dir, 'templates', 'default',
+                          template_filename)
 
 directory template_dir do
   recursive true
 end
 
-if source_file = context.content_source
+if source_file == context.content_source
 
   file template_path do
     content(IO.read(source_file))
