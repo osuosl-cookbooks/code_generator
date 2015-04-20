@@ -27,12 +27,12 @@ end
 
 # rubocop
 cookbook_file "#{cookbook_dir}/.rubocop.yml" do
-  source "rubocop.yml"
+  source 'rubocop.yml'
   action :create_if_missing
 end
 
 # TK
-%w[kitchen.yml kitchen.cloud.yml].each do |k|
+%w(kitchen.yml kitchen.cloud.yml).each do |k|
   template "#{cookbook_dir}/.#{k}" do
     source "#{k}.erb"
     helpers(ChefDK::Generator::TemplateHelper)
@@ -45,22 +45,22 @@ end
 directory "#{cookbook_dir}/recipes"
 
 template "#{cookbook_dir}/recipes/default.rb" do
-  source "default_recipe.rb.erb"
+  source 'default_recipe.rb.erb'
   helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
 end
 
 # git
 if context.have_git
-  if !context.skip_git_init
+  unless context.skip_git_init
 
-    execute("initialize-git") do
-      command("git init .")
+    execute('initialize-git') do
+      command('git init .')
       cwd cookbook_dir
     end
   end
 
   cookbook_file "#{cookbook_dir}/.gitignore" do
-    source "gitignore"
+    source 'gitignore'
   end
 end

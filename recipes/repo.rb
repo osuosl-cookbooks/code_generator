@@ -11,25 +11,25 @@ template "#{repo_dir}/LICENSE" do
 end
 
 cookbook_file "#{repo_dir}/README.md" do
-  source "repo/README.md"
+  source 'repo/README.md'
 end
 
 cookbook_file "#{repo_dir}/Rakefile" do
-  source "repo/Rakefile"
+  source 'repo/Rakefile'
 end
 
 cookbook_file "#{repo_dir}/chefignore" do
-  source "chefignore"
+  source 'chefignore'
 end
 
 directory "#{repo_dir}/config"
 
 template "#{repo_dir}/config/rake.rb" do
-  source "repo/config/rake.rb.erb"
+  source 'repo/config/rake.rb.erb'
   helpers(ChefDK::Generator::TemplateHelper)
 end
 
-%w{certificates data_bags environments roles}.each do |tlo|
+%w(certificates data_bags environments roles).each do |tlo|
   directory "#{repo_dir}/#{tlo}"
 
   cookbook_file "#{repo_dir}/#{tlo}/README.md" do
@@ -41,22 +41,22 @@ directory "#{repo_dir}/cookbooks"
 
 cookbook_file "#{repo_dir}/cookbooks/README.md" do
   if context.policy_only
-    source "repo/cookbooks/README-policy.md"
+    source 'repo/cookbooks/README-policy.md'
   else
-    source "repo/cookbooks/README.md"
+    source 'repo/cookbooks/README.md'
   end
 end
 
 # git
 if context.have_git
-  execute("initialize-git") do
-    command("git init .")
+  execute('initialize-git') do
+    command('git init .')
     cwd repo_dir
     not_if { "#{repo_dir}/.gitignore" }
   end
 
   template "#{repo_dir}/.gitignore" do
-    source "repo/gitignore.erb"
+    source 'repo/gitignore.erb'
     helpers(ChefDK::Generator::TemplateHelper)
   end
 end

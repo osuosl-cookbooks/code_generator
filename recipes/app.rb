@@ -13,7 +13,7 @@ directory app_dir
 # Top level files
 
 # TK
-%w[ kitchen.yml kitchen.cloud.yml ].each do |k|
+%w(kitchen.yml kitchen.cloud.yml).each do |k|
   template "#{app_dir}/.#{k}" do
     source '#{k}.erb'
     helpers(ChefDK::Generator::TemplateHelper)
@@ -49,19 +49,19 @@ cookbook_file "#{cookbook_dir}/Berksfile"
 directory "#{cookbook_dir}/recipes"
 
 template "#{cookbook_dir}/recipes/default.rb" do
-  source "default_recipe.rb.erb"
+  source 'default_recipe.rb.erb'
   helpers(ChefDK::Generator::TemplateHelper)
 end
 
 # git
 if context.have_git
 
-  execute("initialize-git") do
-    command("git init .")
+  execute('initialize-git') do
+    command('git init .')
     cwd app_dir
   end
 
   cookbook_file "#{app_dir}/.gitignore" do
-    source "gitignore"
+    source 'gitignore'
   end
 end
