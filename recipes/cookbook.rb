@@ -31,6 +31,21 @@ cookbook_file "#{cookbook_dir}/.rubocop.yml" do
   action :create_if_missing
 end
 
+# Tests
+test_dir = "#{cookbook_dir}/test/integration/default/serverspec"
+
+directory test_dir do
+  recursive true
+end
+
+template "#{test_dir}/default_spec.rb" do
+    source "serverspec.erb"
+    helpers(ChefDK::Generator::TemplateHelper)
+    action :create_if_missing
+end
+
+
+
 # TK
 %w(kitchen.yml kitchen.cloud.yml).each do |k|
   template "#{cookbook_dir}/.#{k}" do
