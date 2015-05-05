@@ -17,6 +17,11 @@ template "#{cookbook_dir}/README.md" do
   action :create_if_missing
 end
 
+# Rakefile
+cookbook_file "#{cookbook_dir}/Rakefile" do
+  action :create_if_missing
+end
+
 # chefignore
 cookbook_file "#{cookbook_dir}/chefignore"
 
@@ -43,6 +48,7 @@ template "#{cookbook_dir}/recipes/default.rb" do
   helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
 end
+
 
 # git
 if context.have_git
