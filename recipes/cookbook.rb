@@ -38,9 +38,9 @@ directory test_dir do
 end
 
 template "#{test_dir}/default_spec.rb" do
-    source "serverspec.erb"
-    helpers(ChefDK::Generator::TemplateHelper)
-    action :create_if_missing
+  source 'serverspec.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
 end
 
 # TK
