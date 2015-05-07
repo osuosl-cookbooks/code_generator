@@ -49,7 +49,6 @@ template "#{cookbook_dir}/recipes/default.rb" do
   action :create_if_missing
 end
 
-
 # git
 if context.have_git
   if !context.skip_git_init
