@@ -43,9 +43,8 @@ directory test_dir do
   recursive true
 end
 
-template "#{test_dir}/server_spec.rb" do
-  source 'serverspec.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
+cookbook_file "#{test_dir}/server_spec.rb" do
+  source 'serverspec.rb'
   action :create_if_missing
 end
 
