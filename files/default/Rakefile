@@ -15,7 +15,6 @@ encrypted_data_bag_secret_path = 'test/integration/encrypted_data_bag_secret'
 # Create a data bag item (with the id of snakeoil) containing a self-signed SSL
 #  certificate 
 #
-# TODO: Change X509 Name
 def new_ssl_cert
   name = OpenSSL::X509::Name.new [
     ['C', 'US'],
