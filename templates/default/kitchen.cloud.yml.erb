@@ -9,21 +9,9 @@ driver_config:
   openstack_tenant: <%%= ENV['OS_TENANT_NAME'] %>
   floating_ip_pool: <%%= ENV['OS_FLOATING_IP_POOL'] %>
   flavor_ref: <%%= ENV['OS_FLAVOR_REF'] %>
-  # Only use the following if you need to open up firewall ports
-  security_groups:
-    - <%%= ENV['OS_SECURITY_GROUP_NO_FIREWALL'] %>
 
 provisioner:
   name: chef_solo
-  attributes:
-    authorization:
-      sudo:
-        users:
-          - centos
-          - ubuntu
-          - fedora
-    omnibus_updater:
-      disabled: true
 
 platforms:
 - name: centos-6.6
@@ -31,16 +19,11 @@ platforms:
   driver_config:
     username: centos
     image_ref: "CentOS 6.6"
-- name: ubuntu-12.04
+- name: centos-7.1
   driver_plugin: openstack
   driver_config:
-    username: ubuntu
-    image_ref: "Ubuntu 12.04"
-- name: fedora-20
-  driver_plugin: openstack
-  driver_config:
-    username: fedora
-    image_ref: "Fedora 20"
+    username: centos
+    image_ref: "CentOS 7.1"
 
 suites:
   - name: default
