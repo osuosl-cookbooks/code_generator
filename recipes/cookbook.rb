@@ -37,7 +37,7 @@ directory test_dir do
   recursive true
 end
 
-template "#{test_dir}/default_spec.rb" do
+template "#{test_dir}/server_spec.rb" do
   source 'serverspec.erb'
   helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
