@@ -17,7 +17,12 @@ secret_file_path = 'test/integration/encrypted_data_bag_secret'
 #
 # TODO: Change X509 Name
 def new_ssl_cert
-  name = OpenSSL::X509::Name.parse 'CN=nobody/DC=example'
+  name = OpenSSL::X509::Name.new [
+    ['C', 'US'],
+    ['ST', 'Oregon'],
+    ['CN', 'OSU Open Source Lab'],
+    ['DC', 'example']
+  ]
   key = OpenSSL::PKey::RSA.new 2048
 
   cert = OpenSSL::X509::Certificate.new
