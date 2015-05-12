@@ -4,11 +4,11 @@ cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
 # cookbook root dir
 directory cookbook_dir
 
-%w(metadata.rb README.md CHANGELOG.md) do |f|
-    template "#{cookbook_dir}/#{f}" do
-      helpers(ChefDK::Generator::TemplateHelper)
-      action :create_if_missing
-    end
+%w(metadata.rb README.md CHANGELOG.md).each do |f|
+  template "#{cookbook_dir}/#{f}" do
+    helpers(ChefDK::Generator::TemplateHelper)
+    action :create_if_missing
+  end
 end
 
 # chefignore
