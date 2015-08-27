@@ -42,6 +42,11 @@ cookbook_file "#{test_dir}/server_spec.rb" do
   action :create_if_missing
 end
 
+# rubocop
+cookbook_file "#{cookbooK_dir}/.rubocop.yml" do
+  source "rubocop.yml"
+end
+
 # TK
 %w(kitchen.yml kitchen.cloud.yml).each do |k|
   template "#{cookbook_dir}/.#{k}" do
