@@ -1,6 +1,10 @@
 context = ChefDK::Generator.context
 cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
 
+context.license = 'apache2'
+context.copyright_holder = 'Oregon State University'
+context.email = 'chef@osuosl.org'
+
 # cookbook root dir
 directory cookbook_dir
 
