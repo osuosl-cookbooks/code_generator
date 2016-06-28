@@ -1,7 +1,7 @@
 context = ChefDK::Generator.context
 cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
 
-context.license = 'apache2'
+context.license = 'apachev2'
 context.copyright_holder = 'Oregon State University'
 context.email = 'chef@osuosl.org'
 
@@ -31,6 +31,28 @@ end
 # rubocop
 cookbook_file "#{cookbook_dir}/.rubocop.yml" do
   source 'rubocop.yml'
+  action :create_if_missing
+end
+
+# ChefSpec
+directory "#{cookbook_dir}/spec" do
+  recursive true
+end
+
+cookbook_file "#{cookbook_dir}/.rspec" do
+  source 'dot.rspec'
+  action :create_if_missing
+end
+
+template "#{cookbook_dir}/spec/spec_helper.rb" do
+  source 'spec_helper.rb.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
+template "#{cookbook_dir}/spec/default_spec.rb" do
+  source 'default_chefspec.rb.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
 end
 
