@@ -69,12 +69,10 @@ cookbook_file "#{serverspec_dir}/server_spec.rb" do
 end
 
 # TK
-%w(kitchen.yml kitchen.cloud.yml).each do |k|
-  template "#{cookbook_dir}/.#{k}" do
-    source "#{k}.erb"
-    helpers(ChefDK::Generator::TemplateHelper)
-    action :create_if_missing
-  end
+template "#{cookbook_dir}/.kitchen.yml" do
+  source 'kitchen.yml.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
 end
 
 # Recipes
