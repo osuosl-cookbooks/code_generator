@@ -14,6 +14,16 @@ template recipe_path do
   helpers(ChefDK::Generator::TemplateHelper)
 end
 
+directory File.join(cookbook_dir, 'spec') do
+  recursive true
+end
+
+template "#{cookbook_dir}/spec/spec_helper.rb" do
+  source 'spec_helper.rb.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
 template "#{cookbook_dir}/spec/#{recipe_name}_spec.rb" do
   source 'default_chefspec.rb.erb'
   helpers(ChefDK::Generator::TemplateHelper)

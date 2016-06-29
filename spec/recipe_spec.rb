@@ -38,6 +38,21 @@ describe 'code_generator::recipe', default: true do
       end
     end
   end
+  describe File.join(base_dir, 'spec', 'spec_helper.rb') do
+    let(:file) do
+      chef_run.template(File.join(
+                          base_dir,
+                          'spec',
+                          'spec_helper.rb')
+                       )
+    end
+    it do
+      expect(chef_run).to render_file(file.name)
+        .with_content(
+          /^ChefSpec::Coverage.start! { add_filter 'test-cookbook' }$/
+        )
+    end
+  end
   describe File.join(base_dir, 'spec', 'foo_spec.rb') do
     let(:file) do
       chef_run.template(File.join(
@@ -61,6 +76,9 @@ describe 'code_generator::recipe', default: true do
                                            'foo',
                                            'serverspec'
     ))
+  end
+  it "creates #{base_dir}/spec directory" do
+    expect(chef_run).to create_directory(File.join(base_dir, 'spec'))
   end
   it "creates #{base_dir}/test/integration/foo/serverspec/foo_spec.rb if \
     missing" do
