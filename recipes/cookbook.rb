@@ -84,6 +84,15 @@ template "#{cookbook_dir}/recipes/default.rb" do
   action :create_if_missing
 end
 
+# Attributes
+directory "#{cookbook_dir}/attributes"
+
+template "#{cookbook_dir}/attributes/default.rb" do
+  source 'attribute.rb.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
 # git
 if context.have_git
   unless context.skip_git_init
