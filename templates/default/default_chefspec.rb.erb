@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe '<%= cookbook_name %>::<%= recipe_name %>', default: true do
+describe '<%= cookbook_name %>::<%= recipe_name %>', <%= recipe_name %>: true do
   let(:runner) do
     ChefSpec::SoloRunner.new(CENTOS_7_OPTS) do |node|
       # Work around for base::ifconfig:47

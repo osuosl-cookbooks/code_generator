@@ -64,7 +64,7 @@ describe 'code_generator::recipe', default: true do
     it do
       expect(chef_run).to render_file(file.name)
         .with_content(
-          /^describe 'test-cookbook::foo', default: true do$/
+          /^describe 'test-cookbook::foo', foo: true do$/
         )
     end
   end
