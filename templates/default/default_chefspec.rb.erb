@@ -1,14 +1,9 @@
 require_relative 'spec_helper'
 
-describe '<%= cookbook_name %>::<%= recipe_name %>', <%= recipe_name %>: true do
-  let(:runner) do
-    ChefSpec::SoloRunner.new(CENTOS_7_OPTS) do |node|
-      # Work around for base::ifconfig:47
-      node.automatic['virtualization']['system']
-    end
+describe '<%= cookbook_name %>::<%= recipe_name %>' do
+  cached(:chef_run) do
+    ChefSpec::SoloRunner.new(CENTOS_7_OPTS).converge(described_recipe)
   end
-  let(:node) { runner.node }
-  cached(:chef_run) { runner.converge(described_recipe) }
   it 'converges successfully' do
     expect { chef_run }.to_not raise_error
   end

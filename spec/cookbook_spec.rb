@@ -1,14 +1,9 @@
 require_relative 'spec_helper'
 
-describe 'code_generator::cookbook', default: true do
-  let(:runner) do
-    ChefSpec::SoloRunner.new(CENTOS_7_OPTS) do |node|
-      # Work around for base::ifconfig:47
-      node.automatic['virtualization']['system']
-    end
+describe 'code_generator::cookbook' do
+  cached(:chef_run) do
+    ChefSpec::SoloRunner.new(CENTOS_7_OPTS).converge(described_recipe)
   end
-  let(:node) { runner.node }
-  cached(:chef_run) { runner.converge(described_recipe) }
   include_context 'common_stubs'
   base_dir = '/tmp/test-cookbook'
   it 'converges successfully' do
@@ -128,7 +123,7 @@ issues'$},
     it do
       expect(chef_run).to render_file(file.name)
         .with_content(
-          /^describe 'test-cookbook::default', default: true do$/
+          /^describe 'test-cookbook::default' do$/
         )
     end
   end
