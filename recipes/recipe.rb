@@ -12,6 +12,7 @@ context.copyright_holder = 'Oregon State University'
 template recipe_path do
   source 'recipe.rb.erb'
   helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
 end
 
 directory File.join(cookbook_dir, 'spec') do
