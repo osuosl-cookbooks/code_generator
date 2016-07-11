@@ -3,6 +3,10 @@ code_generator CHANGELOG
 This file is used to list changes made in each version of the
 code_generator cookbook.
 
+1.0.1 (2016-07-11)
+------------------
+- Only create the recipe file if it doesn't exist
+
 1.0.0 (2016-07-05)
 ------------------
 - Misc fixes
