@@ -5,6 +5,6 @@ describe '<%= cookbook_name %>::<%= recipe_name %>' do
     ChefSpec::SoloRunner.new(CENTOS_7_OPTS).converge(described_recipe)
   end
   it 'converges successfully' do
-    expect(chef_run).to_not raise_error
+    expect { chef_run }.to_not raise_error
   end
 end
