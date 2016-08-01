@@ -3,6 +3,10 @@ code_generator CHANGELOG
 This file is used to list changes made in each version of the
 code_generator cookbook.
 
+1.0.4 (2016-08-01)
+------------------
+- Disable octal literals rubocop
+
 1.0.3 (2016-07-11)
 ------------------
 - Revert "Pass in chef_run instead of block"
