@@ -12,7 +12,7 @@ CENTOS_7_OPTS = {
 
 CENTOS_6_OPTS = {
   platform: 'centos',
-  version: '6.8',
+  version: '6.7',
   log_level: :fatal
 }.freeze
 
@@ -21,6 +21,21 @@ DEBIAN_8_OPTS = {
   version: '8.4',
   log_level: :fatal
 }.freeze
+
+ALL_PLATFORMS = [
+  CENTOS_7_OPTS,
+  CENTOS_6_OPTS,
+  DEBIAN_8_OPTS
+].freeze
+
+RHEL_PLATFORM = [
+  CENTOS_7_OPTS,
+  CENTOS_6_OPTS
+].freeze
+
+DEBIAN_PLATFORM = [
+  DEBIAN_8_OPTS
+].freeze
 
 shared_context 'common_stubs' do
   before do
