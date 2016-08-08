@@ -3,6 +3,10 @@ code_generator CHANGELOG
 This file is used to list changes made in each version of the
 code_generator cookbook.
 
+1.0.6 (2016-08-08)
+------------------
+- Set default log_level to fatal
+
 1.0.5 (2016-08-03)
 ------------------
 - Add some helper platform definitions
