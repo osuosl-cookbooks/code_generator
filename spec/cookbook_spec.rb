@@ -32,8 +32,8 @@ describe 'code_generator::cookbook' do
     it "creates #{base_dir}/#{d} file if missing" do
       expect(chef_run).to create_cookbook_file_if_missing(
         File.join(base_dir,
-                  d
-                 ))
+                  d)
+      )
     end
   end
   %w(
@@ -102,8 +102,8 @@ issues'$},
       chef_run.template(File.join(
                           base_dir,
                           'spec',
-                          'spec_helper.rb')
-                       )
+                          'spec_helper.rb'
+      ))
     end
     it do
       expect(chef_run).to render_file(file.name)
@@ -117,8 +117,8 @@ issues'$},
       chef_run.template(File.join(
                           base_dir,
                           'spec',
-                          'default_spec.rb')
-                       )
+                          'default_spec.rb'
+      ))
     end
     it do
       expect(chef_run).to render_file(file.name)
