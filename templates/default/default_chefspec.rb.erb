@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 
 describe '<%= cookbook_name %>::<%= recipe_name %>' do
   ALL_PLATFORMS.each do |p|
-    context "#{p[:platform]} #{p[:version]}"
+    context "#{p[:platform]} #{p[:version]}" do
       cached(:chef_run) do
         ChefSpec::SoloRunner.new(p).converge(described_recipe)
       end
