@@ -38,8 +38,8 @@ describe 'code_generator::recipe' do
       chef_run.template(File.join(
                           base_dir,
                           'spec',
-                          'spec_helper.rb')
-                       )
+                          'spec_helper.rb'
+      ))
     end
     it do
       expect(chef_run).to render_file(file.name)
@@ -53,8 +53,8 @@ describe 'code_generator::recipe' do
       chef_run.template(File.join(
                           base_dir,
                           'spec',
-                          'foo_spec.rb')
-                       )
+                          'foo_spec.rb'
+      ))
     end
     it do
       expect(chef_run).to render_file(file.name)
