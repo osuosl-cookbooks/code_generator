@@ -4,3 +4,6 @@ AllCops:
     - '**/Cheffile'
   Exclude:
     - 'metadata.rb'
+
+LineLength:
+  Max: 120

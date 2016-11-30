@@ -7,3 +7,6 @@ AllCops:
 
 Style/NumericLiteralPrefix:
   EnforcedOctalStyle: zero_only
+
+LineLength:
+  Max: 120
