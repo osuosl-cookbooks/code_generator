@@ -3,6 +3,10 @@ code_generator CHANGELOG
 This file is used to list changes made in each version of the
 code_generator cookbook.
 
+1.0.7 (2016-12-28)
+------------------
+- Remove the BlockLength check in rubocop
+
 1.0.6 (2016-08-08)
 ------------------
 - Set default log_level to fatal
