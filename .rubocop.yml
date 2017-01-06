@@ -1,9 +1,1 @@
-AllCops:
-  Include:
-    - '**/Berksfile'
-    - '**/Cheffile'
-  Exclude:
-    - 'metadata.rb'
-
-LineLength:
-  Max: 120
+./files/default/rubocop.yml
