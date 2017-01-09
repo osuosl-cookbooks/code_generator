@@ -1,6 +1,12 @@
+
 context = ChefDK::Generator.context
 cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
 
+silence_chef_formatter unless context.verbose
+
+generator_desc('Ensuring correct cookbook file content')
+
+context.enable_delivery = false
 context.license = 'apachev2'
 context.copyright_holder = 'Oregon State University'
 context.email = 'chef@osuosl.org'
@@ -23,9 +29,20 @@ end
 # chefignore
 cookbook_file "#{cookbook_dir}/chefignore"
 
-# Berks
-cookbook_file "#{cookbook_dir}/Berksfile" do
-  action :create_if_missing
+if context.use_berkshelf
+
+  # Berks
+  cookbook_file "#{cookbook_dir}/Berksfile" do
+    action :create_if_missing
+  end
+else
+
+  # Policyfile
+  template "#{cookbook_dir}/Policyfile.rb" do
+    source 'Policyfile.rb.erb'
+    helpers(ChefDK::Generator::TemplateHelper)
+  end
+
 end
 
 # rubocop
@@ -34,8 +51,31 @@ cookbook_file "#{cookbook_dir}/.rubocop.yml" do
   action :create_if_missing
 end
 
-# ChefSpec
-directory "#{cookbook_dir}/spec" do
+# Test Kitchen
+template "#{cookbook_dir}/.kitchen.yml" do
+  if context.use_berkshelf
+    source 'kitchen.yml.erb'
+  else
+    source 'kitchen_policyfile.yml.erb'
+  end
+
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
+# Inspec
+directory "#{cookbook_dir}/test/smoke/default" do
+  recursive true
+end
+
+template "#{cookbook_dir}/test/smoke/default/default_test.rb" do
+  source 'inspec_default_test.rb.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
+# Chefspec
+directory "#{cookbook_dir}/spec/unit/recipes" do
   recursive true
 end
 
@@ -45,12 +85,17 @@ cookbook_file "#{cookbook_dir}/.rspec" do
 end
 
 template "#{cookbook_dir}/spec/spec_helper.rb" do
-  source 'spec_helper.rb.erb'
+  if context.use_berkshelf
+    source 'spec_helper.rb.erb'
+  else
+    source 'spec_helper_policyfile.rb.erb'
+  end
+
   helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
 end
 
-template "#{cookbook_dir}/spec/default_spec.rb" do
+template "#{cookbook_dir}/spec/unit/recipes/default_spec.rb" do
   source 'default_chefspec.rb.erb'
   helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
@@ -68,18 +113,12 @@ cookbook_file "#{serverspec_dir}/server_spec.rb" do
   action :create_if_missing
 end
 
-# TK
-template "#{cookbook_dir}/.kitchen.yml" do
-  source 'kitchen.yml.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
-  action :create_if_missing
-end
-
 # Recipes
+
 directory "#{cookbook_dir}/recipes"
 
 template "#{cookbook_dir}/recipes/default.rb" do
-  source 'default_recipe.rb.erb'
+  source 'recipe.rb.erb'
   helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
 end
@@ -97,13 +136,31 @@ end
 if context.have_git
   unless context.skip_git_init
 
+    generator_desc('Committing cookbook files to git')
+
     execute('initialize-git') do
       command('git init .')
       cwd cookbook_dir
     end
+
   end
 
   cookbook_file "#{cookbook_dir}/.gitignore" do
     source 'gitignore'
   end
+
+  unless context.skip_git_init
+
+    execute('git-add-new-files') do
+      command('git add .')
+      cwd cookbook_dir
+    end
+
+    execute('git-commit-new-files') do
+      command('git commit -m "Add generated cookbook content"')
+      cwd cookbook_dir
+    end
+  end
 end
+
+include_recipe 'code_generator::build_cookbook' if context.enable_delivery

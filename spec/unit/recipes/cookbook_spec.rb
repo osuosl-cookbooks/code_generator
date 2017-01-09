@@ -1,4 +1,4 @@
-require_relative 'spec_helper'
+require_relative '../../spec_helper'
 
 describe 'code_generator::cookbook' do
   cached(:chef_run) do
@@ -9,13 +9,22 @@ describe 'code_generator::cookbook' do
   it 'converges successfully' do
     expect { chef_run }.to_not raise_error
   end
+  [
+    'Ensuring correct cookbook file content',
+    'Committing cookbook files to git'
+  ].each do |g|
+    it do
+      expect(chef_run).to write_generator_desc(g)
+    end
+  end
   it "creates #{base_dir} directory" do
     expect(chef_run).to create_directory(base_dir)
   end
   %w(
     attributes
     recipes
-    spec
+    spec/unit/recipes
+    test/smoke/default
     test/integration/default/serverspec
   ).each do |d|
     it "creates #{base_dir}/#{d} directory" do
@@ -76,7 +85,7 @@ issues'$},
       /^#### test-cookbook::default$/,
       /"recipe\[test-cookbook\]"/,
       /^- Author:: Oregon State University <chef@osuosl.org>$/,
-      /^Copyright \d{4} Oregon State University$/,
+      /^Copyright:: \d{4}, Oregon State University$/,
       /^Licensed under the Apache License/
     ].each do |line|
       it do
@@ -112,11 +121,13 @@ issues'$},
         )
     end
   end
-  describe File.join(base_dir, 'spec', 'default_spec.rb') do
+  describe File.join(base_dir, 'spec', 'unit', 'recipes', 'default_spec.rb') do
     let(:file) do
       chef_run.template(File.join(
                           base_dir,
                           'spec',
+                          'unit',
+                          'recipes',
                           'default_spec.rb'
       ))
     end
@@ -136,6 +147,9 @@ issues'$},
         )
     end
   end
+  it do
+    expect(chef_run).to create_template_if_missing('/tmp/test-cookbook/test/smoke/default/default_test.rb')
+  end
   describe File.join(base_dir, 'recipes', 'default.rb') do
     let(:file) do
       chef_run.template(File.join(
@@ -145,9 +159,9 @@ issues'$},
       ))
     end
     [
-      /^# Cookbook Name:: test-cookbook$/,
+      /^# Cookbook:: test-cookbook$/,
       /^# Recipe:: default$/,
-      /^# Copyright \d{4} Oregon State University$/,
+      /^# Copyright:: \d{4}, Oregon State University$/,
       /^# Licensed under the Apache License/
     ].each do |line|
       it do
@@ -156,7 +170,13 @@ issues'$},
       end
     end
   end
-  it 'run initialize-git' do
-    expect(chef_run).to run_execute('initialize-git')
+  %w(
+    initialize-git
+    git-add-new-files
+    git-commit-new-files
+  ).each do |e|
+    it do
+      expect(chef_run).to run_execute(e)
+    end
   end
 end

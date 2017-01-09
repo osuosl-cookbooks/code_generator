@@ -3,16 +3,26 @@
 context = ChefDK::Generator.context
 app_dir = File.join(context.app_root, context.app_name)
 cookbooks_dir = context.cookbook_root
-cookbook_dir = File.join(cookbooks_dir, context.app_name)
+cookbook_dir = File.join(cookbooks_dir, context.cookbook_name)
 
 # app root dir
 directory app_dir
 
 # Top level files
 
-# TK
-template "#{cookbook_dir}/.kitchen.yml" do
+# Test Kitchen
+template "#{app_dir}/.kitchen.yml" do
   source 'kitchen.yml.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+end
+
+# Inspec
+directory "#{app_dir}/test/smoke/default" do
+  recursive true
+end
+
+template "#{app_dir}/test/smoke/default/default_test.rb" do
+  source 'inspec_default_test.rb.erb'
   helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
 end
@@ -46,18 +56,33 @@ cookbook_file "#{cookbook_dir}/Berksfile"
 directory "#{cookbook_dir}/recipes"
 
 template "#{cookbook_dir}/recipes/default.rb" do
-  source 'default_recipe.rb.erb'
+  source 'recipe.rb.erb'
   helpers(ChefDK::Generator::TemplateHelper)
+end
+
+# Chefspec
+directory "#{cookbook_dir}/spec/unit/recipes" do
+  recursive true
+end
+
+cookbook_file "#{cookbook_dir}/spec/spec_helper.rb" do
+  action :create_if_missing
+end
+
+template "#{cookbook_dir}/spec/unit/recipes/default_spec.rb" do
+  source 'recipe_spec.rb.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
 end
 
 # git
 if context.have_git
-
-  execute('initialize-git') do
-    command('git init .')
-    cwd app_dir
+  unless context.skip_git_init
+    execute('initialize-git') do
+      command('git init .')
+      cwd app_dir
+    end
   end
-
   cookbook_file "#{app_dir}/.gitignore" do
     source 'gitignore'
   end
