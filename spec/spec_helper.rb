@@ -1,6 +1,10 @@
 require 'chefspec'
 require 'chefspec/berkshelf'
 require 'chef-dk/generator'
+require 'chef-dk/command/generator_commands/chef_exts/recipe_dsl_ext'
+require 'chef-dk/command/generator_commands/chef_exts/quieter_doc_formatter'
+require 'chef-dk/command/generator_commands/chef_exts/generator_desc_resource'
+require_relative 'support/matchers'
 
 ChefSpec::Coverage.start! { add_filter 'code_generator' }
 
@@ -52,5 +56,8 @@ shared_context 'common_stubs' do
     ChefDK::Generator.add_attr_to_context(:recipe_name, 'default')
     ChefDK::Generator.add_attr_to_context(:content_source, nil)
     ChefDK::Generator.add_attr_to_context(:skip_git_init, false)
+    ChefDK::Generator.add_attr_to_context(:verbose, false)
+    ChefDK::Generator.add_attr_to_context(:enable_delivery, false)
+    ChefDK::Generator.add_attr_to_context(:use_berkshelf, true)
   end
 end

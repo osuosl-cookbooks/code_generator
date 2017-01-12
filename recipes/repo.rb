@@ -8,55 +8,60 @@ directory repo_dir
 template "#{repo_dir}/LICENSE" do
   source "LICENSE.#{context.license}.erb"
   helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
+cookbook_file "#{repo_dir}/.chef-repo.txt" do
+  source 'repo/dot-chef-repo.txt'
+  action :create_if_missing
 end
 
 cookbook_file "#{repo_dir}/README.md" do
   source 'repo/README.md'
-end
-
-cookbook_file "#{repo_dir}/Rakefile" do
-  source 'repo/Rakefile'
+  action :create_if_missing
 end
 
 cookbook_file "#{repo_dir}/chefignore" do
   source 'chefignore'
+  action :create_if_missing
 end
 
-directory "#{repo_dir}/config"
+directories_to_create = %w(cookbooks data_bags)
 
-template "#{repo_dir}/config/rake.rb" do
-  source 'repo/config/rake.rb.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
-end
+directories_to_create += if context.use_roles
+                           %w(roles environments)
+                         else
+                           %w(policies)
+                         end
 
-%w(certificates data_bags environments roles).each do |tlo|
-  directory "#{repo_dir}/#{tlo}"
-
-  cookbook_file "#{repo_dir}/#{tlo}/README.md" do
-    source "repo/#{tlo}/README.md"
+directories_to_create.each do |tlo|
+  remote_directory "#{repo_dir}/#{tlo}" do
+    source "repo/#{tlo}"
+    action :create_if_missing
   end
 end
-
-directory "#{repo_dir}/cookbooks"
 
 cookbook_file "#{repo_dir}/cookbooks/README.md" do
   if context.policy_only
-    source 'repo/cookbooks/README-policy.md'
+    source 'cookbook_readmes/README-policy.md'
   else
-    source 'repo/cookbooks/README.md'
+    source 'cookbook_readmes/README.md'
   end
+  action :create_if_missing
 end
 
 # git
 if context.have_git
-  execute('initialize-git') do
-    command('git init .')
-    cwd repo_dir
-    not_if { "#{repo_dir}/.gitignore" }
+  unless context.skip_git_init
+    execute('initialize-git') do
+      command('git init .')
+      cwd repo_dir
+      not_if { File.exist?("#{repo_dir}/.gitignore") }
+    end
   end
-
   template "#{repo_dir}/.gitignore" do
     source 'repo/gitignore.erb'
     helpers(ChefDK::Generator::TemplateHelper)
+    action :create_if_missing
   end
 end

@@ -1,4 +1,4 @@
-require_relative 'spec_helper'
+require_relative '../../spec_helper'
 
 describe 'code_generator::recipe' do
   cached(:chef_run) do
@@ -22,9 +22,9 @@ describe 'code_generator::recipe' do
       ))
     end
     [
-      /^# Cookbook Name:: test-cookbook$/,
+      /^# Cookbook:: test-cookbook$/,
       /^# Recipe:: foo$/,
-      /^# Copyright \d{4} Oregon State University$/,
+      /^# Copyright:: \d{4}, Oregon State University$/,
       /^# Licensed under the Apache License/
     ].each do |line|
       it do
@@ -48,11 +48,13 @@ describe 'code_generator::recipe' do
         )
     end
   end
-  describe File.join(base_dir, 'spec', 'foo_spec.rb') do
+  describe File.join(base_dir, 'spec', 'unit', 'recipes', 'foo_spec.rb') do
     let(:file) do
       chef_run.template(File.join(
                           base_dir,
                           'spec',
+                          'unit',
+                          'recipes',
                           'foo_spec.rb'
       ))
     end
@@ -72,8 +74,8 @@ describe 'code_generator::recipe' do
                                            'serverspec'
     ))
   end
-  it "creates #{base_dir}/spec directory" do
-    expect(chef_run).to create_directory(File.join(base_dir, 'spec'))
+  it "creates #{base_dir}/spec/unit/recipes directory" do
+    expect(chef_run).to create_directory(File.join(base_dir, 'spec', 'unit', 'recipes'))
   end
   it "creates #{base_dir}/test/integration/foo/serverspec/foo_spec.rb if \
     missing" do
@@ -85,5 +87,8 @@ describe 'code_generator::recipe' do
                                                           'serverspec',
                                                           'foo_spec.rb'
     ))
+  end
+  it do
+    expect(chef_run).to create_template_if_missing('/tmp/test-cookbook/test/smoke/default/foo.rb')
   end
 end
