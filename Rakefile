@@ -124,7 +124,12 @@ task :unit do
     run_command('rspec')
 end
 
+desc 'Update Berkshelf'
+task :berks_update do
+      run_command('berks update')
+end
+
 desc 'Run all tests'
-task test: [:style, :lint, :unit]
+task test: [:berks_update, :style, :lint, :unit]
 
 task default: :test
