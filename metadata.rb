@@ -6,4 +6,4 @@ issues_url       'https://github.com/osuosl-cookbooks/code_generator/issues'
 license          'All Rights Reserved'
 description      'Generates Chef code for the OSUOSL'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.0.7'
+version          '1.0.8'

@@ -1,0 +1,4 @@
+cookbook=code_generator
+version=1.0.7
+envs=~
+pr_link=https://github.com/osuosl-cookbooks/code_generator/pull/17
