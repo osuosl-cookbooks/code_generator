@@ -24,7 +24,6 @@ describe 'code_generator::cookbook' do
     attributes
     recipes
     spec/unit/recipes
-    test/smoke/default
     test/integration/default/serverspec
   ).each do |d|
     it "creates #{base_dir}/#{d} directory" do
@@ -148,7 +147,7 @@ issues'$},
     end
   end
   it do
-    expect(chef_run).to create_template_if_missing('/tmp/test-cookbook/test/smoke/default/default_test.rb')
+    expect(chef_run).to_not create_template_if_missing('/tmp/test-cookbook/test/smoke/default/default_test.rb')
   end
   describe File.join(base_dir, 'recipes', 'default.rb') do
     let(:file) do

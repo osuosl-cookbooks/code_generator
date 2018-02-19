@@ -64,15 +64,15 @@ template "#{cookbook_dir}/.kitchen.yml" do
 end
 
 # Inspec
-directory "#{cookbook_dir}/test/smoke/default" do
-  recursive true
-end
-
-template "#{cookbook_dir}/test/smoke/default/default_test.rb" do
-  source 'inspec_default_test.rb.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
-  action :create_if_missing
-end
+# directory "#{cookbook_dir}/test/smoke/default" do
+#   recursive true
+# end
+#
+# template "#{cookbook_dir}/test/smoke/default/default_test.rb" do
+#   source 'inspec_default_test.rb.erb'
+#   helpers(ChefDK::Generator::TemplateHelper)
+#   action :create_if_missing
+# end
 
 # Chefspec
 directory "#{cookbook_dir}/spec/unit/recipes" do
