@@ -89,6 +89,6 @@ describe 'code_generator::recipe' do
     ))
   end
   it do
-    expect(chef_run).to create_template_if_missing('/tmp/test-cookbook/test/smoke/default/foo.rb')
+    expect(chef_run).to_not create_template_if_missing('/tmp/test-cookbook/test/smoke/default/foo.rb')
   end
 end
