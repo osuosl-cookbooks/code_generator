@@ -11,34 +11,34 @@ ChefSpec::Coverage.start! { add_filter 'code_generator' }
 CENTOS_7_OPTS = {
   platform: 'centos',
   version: '7.2.1511',
-  log_level: :fatal
+  log_level: :fatal,
 }.freeze
 
 CENTOS_6_OPTS = {
   platform: 'centos',
   version: '6.7',
-  log_level: :fatal
+  log_level: :fatal,
 }.freeze
 
 DEBIAN_8_OPTS = {
   platform: 'debian',
   version: '8.4',
-  log_level: :fatal
+  log_level: :fatal,
 }.freeze
 
 ALL_PLATFORMS = [
   CENTOS_7_OPTS,
   CENTOS_6_OPTS,
-  DEBIAN_8_OPTS
+  DEBIAN_8_OPTS,
 ].freeze
 
 RHEL_PLATFORM = [
   CENTOS_7_OPTS,
-  CENTOS_6_OPTS
+  CENTOS_6_OPTS,
 ].freeze
 
 DEBIAN_PLATFORM = [
-  DEBIAN_8_OPTS
+  DEBIAN_8_OPTS,
 ].freeze
 
 shared_context 'common_stubs' do

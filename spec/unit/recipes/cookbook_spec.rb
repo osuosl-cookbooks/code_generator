@@ -11,7 +11,7 @@ describe 'code_generator::cookbook' do
   end
   [
     'Ensuring correct cookbook file content',
-    'Committing cookbook files to git'
+    'Committing cookbook files to git',
   ].each do |g|
     it do
       expect(chef_run).to write_generator_desc(g)
@@ -69,7 +69,7 @@ describe 'code_generator::cookbook' do
       %r{^issues_url\s*'https://github.com/osuosl-cookbooks/test-cookbook/\
 issues'$},
       %r{^source_url\s*'https://github.com/osuosl-cookbooks/test-cookbook'$},
-      /^supports         'centos', '~> 7.0'$/
+      /^supports         'centos', '~> 7.0'$/,
     ].each do |line|
       it do
         expect(chef_run).to render_file(file.name)
@@ -85,7 +85,7 @@ issues'$},
       /"recipe\[test-cookbook\]"/,
       /^- Author:: Oregon State University <chef@osuosl.org>$/,
       /^Copyright:: \d{4}, Oregon State University$/,
-      /^Licensed under the Apache License/
+      /^Licensed under the Apache License/,
     ].each do |line|
       it do
         expect(chef_run).to render_file(file.name)
@@ -97,7 +97,7 @@ issues'$},
     let(:file) { chef_run.template(File.join(base_dir, 'CHANGELOG.md')) }
     [
       /^test-cookbook CHANGELOG$/,
-      /^- Initial release of test-cookbook$/
+      /^- Initial release of test-cookbook$/,
     ].each do |line|
       it do
         expect(chef_run).to render_file(file.name)
@@ -161,7 +161,7 @@ issues'$},
       /^# Cookbook:: test-cookbook$/,
       /^# Recipe:: default$/,
       /^# Copyright:: \d{4}, Oregon State University$/,
-      /^# Licensed under the Apache License/
+      /^# Licensed under the Apache License/,
     ].each do |line|
       it do
         expect(chef_run).to render_file(file.name)
