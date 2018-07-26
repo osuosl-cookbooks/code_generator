@@ -65,7 +65,7 @@ describe 'code_generator::cookbook' do
       /^name             'test-cookbook'$/,
       /^maintainer       'Oregon State University'$/,
       /^maintainer_email 'chef@osuosl.org'$/,
-      /^license          'apachev2'$/,
+      /^license          'Apache-2.0'$/,
       %r{^issues_url\s*'https://github.com/osuosl-cookbooks/test-cookbook/\
 issues'$},
       %r{^source_url\s*'https://github.com/osuosl-cookbooks/test-cookbook'$},
@@ -98,6 +98,18 @@ issues'$},
     [
       /^test-cookbook CHANGELOG$/,
       /^- Initial release of test-cookbook$/,
+    ].each do |line|
+      it do
+        expect(chef_run).to render_file(file.name)
+          .with_content(line)
+      end
+    end
+  end
+  describe File.join(base_dir, 'LICENSE') do
+    let(:file) { chef_run.template(File.join(base_dir, 'LICENSE')) }
+    [
+      /Apache License/,
+      /Version 2.0, January 2004/,
     ].each do |line|
       it do
         expect(chef_run).to render_file(file.name)
