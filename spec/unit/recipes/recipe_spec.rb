@@ -25,7 +25,7 @@ describe 'code_generator::recipe' do
       /^# Cookbook:: test-cookbook$/,
       /^# Recipe:: foo$/,
       /^# Copyright:: \d{4}, Oregon State University$/,
-      /^# Licensed under the Apache License/
+      /^# Licensed under the Apache License/,
     ].each do |line|
       it do
         expect(chef_run).to render_file(file.name)

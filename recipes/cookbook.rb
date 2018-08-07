@@ -11,10 +11,32 @@ context.license = 'apachev2'
 context.copyright_holder = 'Oregon State University'
 context.email = 'chef@osuosl.org'
 
+# metadata.rb
+spdx_license =  case context.license
+                when 'apachev2'
+                  'Apache-2.0'
+                when 'mit'
+                  'MIT'
+                when 'gplv2'
+                  'GPL-2.0'
+                when 'gplv3'
+                  'GPL-3.0'
+                else
+                  'All Rights Reserved'
+                end
+
 # cookbook root dir
 directory cookbook_dir
 
-%w(metadata.rb README.md CHANGELOG.md).each do |f|
+template "#{cookbook_dir}/metadata.rb" do
+  helpers(ChefDK::Generator::TemplateHelper)
+  variables(
+    spdx_license: spdx_license
+  )
+  action :create_if_missing
+end
+
+%w(README.md CHANGELOG.md).each do |f|
   template "#{cookbook_dir}/#{f}" do
     helpers(ChefDK::Generator::TemplateHelper)
     action :create_if_missing
@@ -48,6 +70,13 @@ end
 # rubocop
 cookbook_file "#{cookbook_dir}/.rubocop.yml" do
   source 'rubocop.yml'
+  action :create_if_missing
+end
+
+# LICENSE
+template "#{cookbook_dir}/LICENSE" do
+  helpers(ChefDK::Generator::TemplateHelper)
+  source "LICENSE.#{context.license}.erb"
   action :create_if_missing
 end
 
