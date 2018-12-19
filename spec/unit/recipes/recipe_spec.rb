@@ -15,11 +15,7 @@ describe 'code_generator::recipe' do
   end
   describe File.join(base_dir, 'recipes', 'foo.rb') do
     let(:file) do
-      chef_run.template(File.join(
-                          base_dir,
-                          'recipes',
-                          'foo.rb'
-      ))
+      chef_run.template(File.join(base_dir, 'recipes', 'foo.rb'))
     end
     [
       /^# Cookbook:: test-cookbook$/,
@@ -35,58 +31,31 @@ describe 'code_generator::recipe' do
   end
   describe File.join(base_dir, 'spec', 'spec_helper.rb') do
     let(:file) do
-      chef_run.template(File.join(
-                          base_dir,
-                          'spec',
-                          'spec_helper.rb'
-      ))
+      chef_run.template(File.join(base_dir, 'spec', 'spec_helper.rb'))
     end
     it do
       expect(chef_run).to render_file(file.name)
-        .with_content(
-          /^ChefSpec::Coverage.start! { add_filter 'test-cookbook' }$/
-        )
+        .with_content(/^ChefSpec::Coverage.start! { add_filter 'test-cookbook' }$/)
     end
   end
   describe File.join(base_dir, 'spec', 'unit', 'recipes', 'foo_spec.rb') do
     let(:file) do
-      chef_run.template(File.join(
-                          base_dir,
-                          'spec',
-                          'unit',
-                          'recipes',
-                          'foo_spec.rb'
-      ))
+      chef_run.template(File.join(base_dir, 'spec', 'unit', 'recipes', 'foo_spec.rb'))
     end
     it do
       expect(chef_run).to render_file(file.name)
-        .with_content(
-          /^describe 'test-cookbook::foo' do$/
-        )
+        .with_content(/^describe 'test-cookbook::foo' do$/)
     end
   end
-  it "creates #{base_dir}/test/integration/foo/serverspec directory" do
-    expect(chef_run).to create_directory(File.join(
-                                           base_dir,
-                                           'test',
-                                           'integration',
-                                           'foo',
-                                           'serverspec'
-    ))
+  it "creates #{base_dir}/test/integration/foo/inspec directory" do
+    expect(chef_run).to create_directory(File.join(base_dir, 'test', 'integration', 'foo', 'inspec'))
   end
   it "creates #{base_dir}/spec/unit/recipes directory" do
     expect(chef_run).to create_directory(File.join(base_dir, 'spec', 'unit', 'recipes'))
   end
-  it "creates #{base_dir}/test/integration/foo/serverspec/foo_spec.rb if \
-    missing" do
-    expect(chef_run).to create_cookbook_file_if_missing(File.join(
-                                                          base_dir,
-                                                          'test',
-                                                          'integration',
-                                                          'foo',
-                                                          'serverspec',
-                                                          'foo_spec.rb'
-    ))
+  it "creates #{base_dir}/test/integration/foo/inspec/foo_spec.rb if missing" do
+    expect(chef_run).to create_template_if_missing(
+      File.join(base_dir, 'test', 'integration', 'foo', 'inspec', 'foo_spec.rb'))
   end
   it do
     expect(chef_run).to_not create_template_if_missing('/tmp/test-cookbook/test/smoke/default/foo.rb')
