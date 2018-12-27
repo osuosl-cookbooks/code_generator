@@ -24,7 +24,7 @@ describe 'code_generator::cookbook' do
     attributes
     recipes
     spec/unit/recipes
-    test/integration/default/serverspec
+    test/integration/default/inspec
   ).each do |d|
     it "creates #{base_dir}/#{d} directory" do
       expect(chef_run).to create_directory(File.join(base_dir, d))
@@ -35,14 +35,14 @@ describe 'code_generator::cookbook' do
     Rakefile
     .rspec
     .rubocop.yml
-    test/integration/default/serverspec/server_spec.rb
   ).each do |d|
     it "creates #{base_dir}/#{d} file if missing" do
       expect(chef_run).to create_cookbook_file_if_missing(
-        File.join(base_dir,
-                  d)
-      )
+        File.join(base_dir, d))
     end
+  end
+  it do
+    expect(chef_run).to create_template_if_missing("#{base_dir}/test/integration/default/inspec/default_spec.rb")
   end
   %w(
     chefignore
@@ -53,11 +53,7 @@ describe 'code_generator::cookbook' do
     end
   end
   it "creates #{base_dir}/attributes/default.rb file" do
-    expect(chef_run).to create_template_if_missing(File.join(
-                                                     base_dir,
-                                                     'attributes',
-                                                     'default.rb'
-    ))
+    expect(chef_run).to create_template_if_missing(File.join(base_dir, 'attributes', 'default.rb'))
   end
   describe File.join(base_dir, 'metadata.rb') do
     let(:file) { chef_run.template(File.join(base_dir, 'metadata.rb')) }
@@ -112,50 +108,31 @@ issues'$},
       /Version 2.0, January 2004/,
     ].each do |line|
       it do
-        expect(chef_run).to render_file(file.name)
-          .with_content(line)
+        expect(chef_run).to render_file(file.name).with_content(line)
       end
     end
   end
   describe File.join(base_dir, 'spec', 'spec_helper.rb') do
     let(:file) do
-      chef_run.template(File.join(
-                          base_dir,
-                          'spec',
-                          'spec_helper.rb'
-      ))
+      chef_run.template(File.join(base_dir, 'spec', 'spec_helper.rb'))
     end
     it do
       expect(chef_run).to render_file(file.name)
-        .with_content(
-          /^ChefSpec::Coverage.start! { add_filter 'test-cookbook' }$/
-        )
+        .with_content(/^ChefSpec::Coverage.start! { add_filter 'test-cookbook' }$/)
     end
   end
   describe File.join(base_dir, 'spec', 'unit', 'recipes', 'default_spec.rb') do
     let(:file) do
-      chef_run.template(File.join(
-                          base_dir,
-                          'spec',
-                          'unit',
-                          'recipes',
-                          'default_spec.rb'
-      ))
+      chef_run.template(File.join(base_dir, 'spec', 'unit', 'recipes', 'default_spec.rb'))
     end
     it do
-      expect(chef_run).to render_file(file.name)
-        .with_content(
-          /^describe 'test-cookbook::default' do$/
-        )
+      expect(chef_run).to render_file(file.name).with_content(/^describe 'test-cookbook::default' do$/)
     end
   end
   describe File.join(base_dir, 'recipes', '.kitchen.yml') do
     let(:file) { chef_run.template(File.join(base_dir, '.kitchen.yml')) }
     it do
-      expect(chef_run).to render_file(file.name)
-        .with_content(
-          /- recipe\[test-cookbook::default\]$/
-        )
+      expect(chef_run).to render_file(file.name).with_content(/- recipe\[test-cookbook::default\]$/)
     end
   end
   it do
@@ -163,11 +140,7 @@ issues'$},
   end
   describe File.join(base_dir, 'recipes', 'default.rb') do
     let(:file) do
-      chef_run.template(File.join(
-                          base_dir,
-                          'recipes',
-                          'default.rb'
-      ))
+      chef_run.template(File.join(base_dir, 'recipes', 'default.rb'))
     end
     [
       /^# Cookbook:: test-cookbook$/,
@@ -176,8 +149,7 @@ issues'$},
       /^# Licensed under the Apache License/,
     ].each do |line|
       it do
-        expect(chef_run).to render_file(file.name)
-          .with_content(line)
+        expect(chef_run).to render_file(file.name) .with_content(line)
       end
     end
   end

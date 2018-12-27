@@ -5,10 +5,10 @@ recipe_path = File.join(cookbook_dir, 'recipes', "#{context.new_file_basename}.r
 spec_helper_path = File.join(cookbook_dir, 'spec', 'spec_helper.rb')
 spec_dir = File.join(cookbook_dir, 'spec', 'unit', 'recipes')
 spec_path = File.join(spec_dir, "#{context.new_file_basename}_spec.rb")
-# inspec_dir = File.join(cookbook_dir, 'test', 'smoke', 'default')
-# inspec_path = File.join(inspec_dir, "#{context.new_file_basename}.rb")
-serverspec_dir = File.join(cookbook_dir, 'test', 'integration', context.new_file_basename, 'serverspec')
-serverspec_path = File.join(serverspec_dir, "#{context.new_file_basename}_spec.rb")
+inspec_dir = File.join(cookbook_dir, 'test', 'integration', context.new_file_basename, 'inspec')
+inspec_path = File.join(inspec_dir, "#{context.new_file_basename}_spec.rb")
+# serverspec_dir = File.join(cookbook_dir, 'test', 'integration', context.new_file_basename, 'serverspec')
+# serverspec_path = File.join(serverspec_dir, "#{context.new_file_basename}_spec.rb")
 
 context.license = 'apachev2'
 context.copyright_holder = 'Oregon State University'
@@ -41,25 +41,25 @@ template spec_path do
   action :create_if_missing
 end
 
-directory serverspec_dir do
-  recursive true
-end
-
-cookbook_file serverspec_path do
-  source 'serverspec.rb'
-  action :create_if_missing
-end
-
-# Inspec
-# directory inspec_dir do
+# directory serverspec_dir do
 #   recursive true
 # end
 #
-# template inspec_path do
-#   source 'inspec_default_test.rb.erb'
-#   helpers(ChefDK::Generator::TemplateHelper)
+# cookbook_file serverspec_path do
+#   source 'serverspec.rb'
 #   action :create_if_missing
 # end
+
+# Inspec
+directory inspec_dir do
+  recursive true
+end
+
+template inspec_path do
+  source 'inspec_default_test.rb.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
+end
 
 # Recipe
 template recipe_path do
