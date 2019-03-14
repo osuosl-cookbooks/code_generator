@@ -132,6 +132,9 @@ issues'$},
   describe File.join(base_dir, 'recipes', '.kitchen.yml') do
     let(:file) { chef_run.template(File.join(base_dir, '.kitchen.yml')) }
     it do
+      expect(chef_run).to render_file(file.name).with_content(/^verifier:\n  name: inspec$/)
+    end
+    it do
       expect(chef_run).to render_file(file.name).with_content(/- recipe\[test-cookbook::default\]$/)
     end
   end
