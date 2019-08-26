@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 context = ChefDK::Generator.context
 repo_dir = File.join(context.repo_root, context.repo_name)
 
@@ -26,12 +27,12 @@ cookbook_file "#{repo_dir}/chefignore" do
   action :create_if_missing
 end
 
-directories_to_create = %w(cookbooks data_bags)
+directories_to_create = %w( cookbooks data_bags )
 
 directories_to_create += if context.use_roles
-                           %w(roles environments)
+                           %w( roles environments )
                          else
-                           %w(policies)
+                           %w( policyfiles )
                          end
 
 directories_to_create.each do |tlo|

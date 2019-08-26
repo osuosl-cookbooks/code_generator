@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 context = ChefDK::Generator.context
 cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
@@ -82,6 +83,10 @@ end
 
 # Test Kitchen
 template "#{cookbook_dir}/.kitchen.yml" do
+  # TODO: uncomment below once we've migrated over to ChefDK 3.x
+  # if context.kitchen == 'dokken'
+  #   # kitchen-dokken configuration works with berkshelf and policyfiles
+  #   source 'kitchen_dokken.yml.erb'
   if context.use_berkshelf
     source 'kitchen.yml.erb'
   else
@@ -129,18 +134,6 @@ template "#{cookbook_dir}/spec/unit/recipes/default_spec.rb" do
   helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
 end
-
-# ServerSpec
-# serverspec_dir = "#{cookbook_dir}/test/integration/default/serverspec"
-#
-# directory serverspec_dir do
-#   recursive true
-# end
-#
-# cookbook_file "#{serverspec_dir}/server_spec.rb" do
-#   source 'serverspec.rb'
-#   action :create_if_missing
-# end
 
 # Recipes
 
