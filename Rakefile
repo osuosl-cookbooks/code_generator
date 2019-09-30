@@ -117,7 +117,7 @@ end
 
 desc 'Run FoodCritic (lint) tests'
 task :lint do
-  run_command('foodcritic --epic-fail any .')
+  run_command('foodcritic -t ~FC011 -t ~FC031 -t ~FC071 --epic-fail any .')
 end
 
 desc 'Run RSpec (unit) tests'
