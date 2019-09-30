@@ -117,7 +117,7 @@ issues'$},
       chef_run.template(File.join(base_dir, 'spec', 'spec_helper.rb'))
     end
     it do
-      expect(chef_run).to render_file(file.name)
+      expect(chef_run).to_not render_file(file.name)
         .with_content(/^ChefSpec::Coverage.start! { add_filter 'test-cookbook' }$/)
     end
   end
