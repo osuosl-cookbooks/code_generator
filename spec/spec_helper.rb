@@ -6,30 +6,28 @@ require 'chef-dk/command/generator_commands/chef_exts/quieter_doc_formatter'
 require 'chef-dk/command/generator_commands/chef_exts/generator_desc_resource'
 require_relative 'support/matchers'
 
-ChefSpec::Coverage.start! { add_filter 'code_generator' }
-
 CENTOS_7_OPTS = {
   platform: 'centos',
-  version: '7.2.1511',
-  log_level: :fatal,
+  version: '7',
+  log_level: :warn,
 }.freeze
 
 CENTOS_6_OPTS = {
   platform: 'centos',
-  version: '6.7',
-  log_level: :fatal,
+  version: '6',
+  log_level: :warn,
 }.freeze
 
-DEBIAN_8_OPTS = {
+DEBIAN_9_OPTS = {
   platform: 'debian',
-  version: '8.4',
-  log_level: :fatal,
+  version: '8',
+  log_level: :warn,
 }.freeze
 
 ALL_PLATFORMS = [
   CENTOS_7_OPTS,
   CENTOS_6_OPTS,
-  DEBIAN_8_OPTS,
+  DEBIAN_9_OPTS,
 ].freeze
 
 RHEL_PLATFORM = [
@@ -38,7 +36,7 @@ RHEL_PLATFORM = [
 ].freeze
 
 DEBIAN_PLATFORM = [
-  DEBIAN_8_OPTS,
+  DEBIAN_9_OPTS,
 ].freeze
 
 shared_context 'common_stubs' do

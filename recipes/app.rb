@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 
 context = ChefDK::Generator.context
 app_dir = File.join(context.app_root, context.app_name)
@@ -17,15 +17,15 @@ template "#{app_dir}/.kitchen.yml" do
 end
 
 # Inspec
-# directory "#{app_dir}/test/smoke/default" do
-#   recursive true
-# end
-#
-# template "#{app_dir}/test/smoke/default/default_test.rb" do
-#   source 'inspec_default_test.rb.erb'
-#   helpers(ChefDK::Generator::TemplateHelper)
-#   action :create_if_missing
-# end
+directory "#{app_dir}/test/integration/default" do
+  recursive true
+end
+
+template "#{app_dir}/test/integration/default/default_test.rb" do
+  source 'inspec_default_test.rb.erb'
+  helpers(ChefDK::Generator::TemplateHelper)
+  action :create_if_missing
+end
 
 # README
 template "#{app_dir}/README.md" do
