@@ -2,13 +2,13 @@ require_relative '../../spec_helper'
 
 describe 'code_generator::recipe' do
   cached(:chef_run) do
-    ChefSpec::SoloRunner.new(CENTOS_7_OPTS).converge(described_recipe)
+    ChefSpec::SoloRunner.new(CENTOS_8).converge(described_recipe)
   end
   include_context 'common_stubs'
   base_dir = '/tmp/test-cookbook'
   before do
-    ChefDK::Generator.add_attr_to_context(:recipe_name, 'foo')
-    ChefDK::Generator.add_attr_to_context(:new_file_basename, 'foo')
+    ChefCLI::Generator.add_attr_to_context(:recipe_name, 'foo')
+    ChefCLI::Generator.add_attr_to_context(:new_file_basename, 'foo')
   end
   it 'converges successfully' do
     expect { chef_run }.to_not raise_error
@@ -20,22 +20,13 @@ describe 'code_generator::recipe' do
     [
       /^# Cookbook:: test-cookbook$/,
       /^# Recipe:: foo$/,
-      /^# Copyright:: \d{4}, Oregon State University$/,
+      /^# Copyright:: #{Time.new.year}, Oregon State University$/,
       /^# Licensed under the Apache License/,
     ].each do |line|
       it do
         expect(chef_run).to render_file(file.name)
           .with_content(line)
       end
-    end
-  end
-  describe File.join(base_dir, 'spec', 'spec_helper.rb') do
-    let(:file) do
-      chef_run.template(File.join(base_dir, 'spec', 'spec_helper.rb'))
-    end
-    it do
-      expect(chef_run).to_not render_file(file.name)
-        .with_content(/^ChefSpec::Coverage.start! { add_filter 'test-cookbook' }$/)
     end
   end
   describe File.join(base_dir, 'spec', 'unit', 'recipes', 'foo_spec.rb') do
