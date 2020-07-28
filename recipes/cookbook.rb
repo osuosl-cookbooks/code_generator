@@ -1,16 +1,12 @@
-# frozen_string_literal: true
-
-context = ChefDK::Generator.context
+context = ChefCLI::Generator.context
 cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
 
 silence_chef_formatter unless context.verbose
 
-generator_desc('Ensuring correct cookbook file content')
+generator_desc('Ensuring correct cookbook content')
 
-context.enable_delivery = false
-context.license = 'apachev2'
-context.copyright_holder = 'Oregon State University'
-context.email = 'chef@osuosl.org'
+# cookbook root dir
+directory cookbook_dir
 
 # metadata.rb
 spdx_license =  case context.license
@@ -26,22 +22,33 @@ spdx_license =  case context.license
                   'All Rights Reserved'
                 end
 
-# cookbook root dir
-directory cookbook_dir
+###
+# OSL site config
+###
+context.use_policyfile = false
+context.enable_workflow = false
+context.license = 'apachev2'
+context.copyright_holder = 'Oregon State University'
+context.email = 'chef@osuosl.org'
 
 template "#{cookbook_dir}/metadata.rb" do
-  helpers(ChefDK::Generator::TemplateHelper)
+  helpers(ChefCLI::Generator::TemplateHelper)
   variables(
     spdx_license: spdx_license
   )
   action :create_if_missing
 end
 
-%w(README.md CHANGELOG.md).each do |f|
-  template "#{cookbook_dir}/#{f}" do
-    helpers(ChefDK::Generator::TemplateHelper)
-    action :create_if_missing
-  end
+# README
+template "#{cookbook_dir}/README.md" do
+  helpers(ChefCLI::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
+# CHANGELOG
+template "#{cookbook_dir}/CHANGELOG.md" do
+  helpers(ChefCLI::Generator::TemplateHelper)
+  action :create_if_missing
 end
 
 # Rakefile
@@ -52,20 +59,17 @@ end
 # chefignore
 cookbook_file "#{cookbook_dir}/chefignore"
 
-if context.use_berkshelf
-
+if context.use_policyfile
+  # Policyfile
+  template "#{cookbook_dir}/Policyfile.rb" do
+    source 'Policyfile.rb.erb'
+    helpers(ChefCLI::Generator::TemplateHelper)
+  end
+else
   # Berks
   cookbook_file "#{cookbook_dir}/Berksfile" do
     action :create_if_missing
   end
-else
-
-  # Policyfile
-  template "#{cookbook_dir}/Policyfile.rb" do
-    source 'Policyfile.rb.erb'
-    helpers(ChefDK::Generator::TemplateHelper)
-  end
-
 end
 
 # rubocop
@@ -76,35 +80,34 @@ end
 
 # LICENSE
 template "#{cookbook_dir}/LICENSE" do
-  helpers(ChefDK::Generator::TemplateHelper)
+  helpers(ChefCLI::Generator::TemplateHelper)
   source "LICENSE.#{context.license}.erb"
   action :create_if_missing
 end
 
 # Test Kitchen
-template "#{cookbook_dir}/.kitchen.yml" do
-  # TODO: uncomment below once we've migrated over to ChefDK 3.x
-  # if context.kitchen == 'dokken'
-  #   # kitchen-dokken configuration works with berkshelf and policyfiles
-  #   source 'kitchen_dokken.yml.erb'
-  if context.use_berkshelf
-    source 'kitchen.yml.erb'
-  else
+template "#{cookbook_dir}/kitchen.yml" do
+  if context.kitchen == 'dokken'
+    # kitchen-dokken configuration works with berkshelf and policyfiles
+    source 'kitchen_dokken.yml.erb'
+  elsif context.use_policyfile
     source 'kitchen_policyfile.yml.erb'
+  else
+    source 'kitchen.yml.erb'
   end
 
-  helpers(ChefDK::Generator::TemplateHelper)
+  helpers(ChefCLI::Generator::TemplateHelper)
   action :create_if_missing
 end
 
-# Inspec
+# InSpec
 directory "#{cookbook_dir}/test/integration/default/inspec" do
   recursive true
 end
 
 template "#{cookbook_dir}/test/integration/default/inspec/default_spec.rb" do
   source 'inspec_default_test.rb.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
+  helpers(ChefCLI::Generator::TemplateHelper)
   action :create_if_missing
 end
 
@@ -113,25 +116,19 @@ directory "#{cookbook_dir}/spec/unit/recipes" do
   recursive true
 end
 
-cookbook_file "#{cookbook_dir}/.rspec" do
-  source 'dot.rspec'
-  action :create_if_missing
-end
-
-template "#{cookbook_dir}/spec/spec_helper.rb" do
-  if context.use_berkshelf
-    source 'spec_helper.rb.erb'
+cookbook_file "#{cookbook_dir}/spec/spec_helper.rb" do
+  if context.use_policyfile
+    source 'spec_helper_policyfile.rb'
   else
-    source 'spec_helper_policyfile.rb.erb'
+    source 'spec_helper.rb'
   end
 
-  helpers(ChefDK::Generator::TemplateHelper)
   action :create_if_missing
 end
 
 template "#{cookbook_dir}/spec/unit/recipes/default_spec.rb" do
-  source 'default_chefspec.rb.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
+  source 'recipe_spec.rb.erb'
+  helpers(ChefCLI::Generator::TemplateHelper)
   action :create_if_missing
 end
 
@@ -141,17 +138,19 @@ directory "#{cookbook_dir}/recipes"
 
 template "#{cookbook_dir}/recipes/default.rb" do
   source 'recipe.rb.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
+  helpers(ChefCLI::Generator::TemplateHelper)
   action :create_if_missing
 end
 
-# Attributes
-directory "#{cookbook_dir}/attributes"
+# the same will be done below if workflow was enabled so avoid double work and skip this
+unless context.enable_workflow
+  directory "#{cookbook_dir}/.delivery"
 
-template "#{cookbook_dir}/attributes/default.rb" do
-  source 'attribute.rb.erb'
-  helpers(ChefDK::Generator::TemplateHelper)
-  action :create_if_missing
+  # Adding the delivery local-mode config
+  cookbook_file "#{cookbook_dir}/.delivery/project.toml" do
+    source 'delivery-project.toml'
+    not_if { ::File.exist?("#{cookbook_dir}/.delivery/project.toml") }
+  end
 end
 
 # git
@@ -185,4 +184,4 @@ if context.have_git
   end
 end
 
-include_recipe 'code_generator::build_cookbook' if context.enable_delivery
+include_recipe '::build_cookbook' if context.enable_workflow

@@ -1,6 +1,6 @@
 #
-# Chef Documentation
-# https://docs.chef.io/libraries.html
+# Chef Infra Documentation
+# https://docs.chef.io/libraries/
 #
 
 #
@@ -9,14 +9,16 @@
 # camel-casing throughout the remainder of the name.
 #
 module <%= @cookbook_class_name %>
-  module <%= @helper_class_name %>
-    #
-    # Define the methods that you would like to assist the work you do in recipes,
-    # resources, or templates.
-    #
-    # def my_helper_method
-    #   # help method implementation
-    # end
+  module Cookbook
+    module <%= @helper_class_name %>
+      #
+      # Define the methods that you would like to assist the work you do in recipes,
+      # resources, or templates.
+      #
+      # def my_helper_method
+      #   # help method implementation
+      # end
+    end
   end
 end
 
