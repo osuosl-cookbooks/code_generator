@@ -198,6 +198,12 @@ EOF
 verifier:
   name: inspec
 
+provisioner:
+  name: chef_solo
+  enforce_idempotency: true
+  multiple_converge: 2
+  deprecations_as_errors: true
+
 suites:
   - name: default
     run_list:
