@@ -1,1 +1,8 @@
-# To learn more about Custom Resources, see https://docs.chef.io/custom_resources/
+resource_name :<%= cookbook_name.gsub('-', '_') %>_<%= recipe_name %>
+default_action :create
+
+property :foo, String, default: 'Example property.'
+
+action :create do
+  # do things
+end
