@@ -26,8 +26,9 @@ describe 'code_generator::resource' do
     [
       /^resource_name :test_cookbook_foo$/,
       /^provides :test_cookbook_foo$/,
+      %r{# INFO: example property -- see https://docs.chef.io/custom_resources/},
+      /^# property :foo, String, default: 'bar', description: 'Example property.'$/,
       /^default_action :create$/,
-      /^property :foo, String, default: 'Example property.'$/,
       /^action :create do$/,
     ].each do |line|
       it do

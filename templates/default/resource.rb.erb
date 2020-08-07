@@ -2,7 +2,8 @@ resource_name :<%= cookbook_name.gsub('-', '_') %>_<%= recipe_name %>
 provides :<%= cookbook_name.gsub('-', '_') %>_<%= recipe_name %>
 default_action :create
 
-property :foo, String, default: 'Example property.'
+# INFO: example property -- see https://docs.chef.io/custom_resources/
+# property :foo, String, default: 'bar', description: 'Example property.'
 
 action :create do
   # do things
