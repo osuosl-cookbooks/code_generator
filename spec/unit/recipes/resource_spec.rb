@@ -25,6 +25,7 @@ describe 'code_generator::resource' do
     end
     [
       /^resource_name :test_cookbook_foo$/,
+      /^provides :test_cookbook_foo$/,
       /^default_action :create$/,
       /^property :foo, String, default: 'Example property.'$/,
       /^action :create do$/,
