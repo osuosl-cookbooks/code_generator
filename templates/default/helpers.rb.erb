@@ -21,5 +21,5 @@ module <%= @cookbook_class_name %>
     end
   end
 end
-Chef::Recipe.include ::<%= @cookbook_class_name %>::Cookbook::<%= @helper_class_name %>
+Chef::DSL::Recipe.include ::<%= @cookbook_class_name %>::Cookbook::<%= @helper_class_name %>
 Chef::Resource.include ::<%= @cookbook_class_name %>::Cookbook::<%= @helper_class_name %>
