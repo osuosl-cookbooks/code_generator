@@ -99,7 +99,7 @@ license           'Apache-2.0'
 description       'Installs/Configures test-cookbook'
 issues_url        'https://github.com/osuosl-cookbooks/test-cookbook/issues'
 source_url        'https://github.com/osuosl-cookbooks/test-cookbook'
-chef_version      '>= 15.0'
+chef_version      '>= 16.0'
 version           '0.1.0'
 
 supports          'centos', '~> 7.0'
@@ -199,7 +199,7 @@ verifier:
   name: inspec
 
 provisioner:
-  name: chef_solo
+  name: chef_zero
   enforce_idempotency: true
   multiple_converge: 2
   deprecations_as_errors: true
