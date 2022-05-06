@@ -27,7 +27,6 @@ shared_context 'common_stubs' do
     ChefCLI::Generator.add_attr_to_context(:content_source, nil)
     ChefCLI::Generator.add_attr_to_context(:skip_git_init, false)
     ChefCLI::Generator.add_attr_to_context(:verbose, false)
-    ChefCLI::Generator.add_attr_to_context(:enable_workflow, false)
     ChefCLI::Generator.add_attr_to_context(:use_policyfile, false)
     ChefCLI::Generator.add_attr_to_context(:use_berkshelf, true)
     ChefCLI::Generator.add_attr_to_context(:kitchen, 'vagrant')

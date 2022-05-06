@@ -26,7 +26,6 @@ spdx_license =  case context.license
 # OSL site config
 ###
 context.use_policyfile = false
-context.enable_workflow = false
 context.license = 'apachev2'
 context.copyright_holder = 'Oregon State University'
 context.email = 'chef@osuosl.org'
@@ -142,17 +141,6 @@ template "#{cookbook_dir}/recipes/default.rb" do
   action :create_if_missing
 end
 
-# the same will be done below if workflow was enabled so avoid double work and skip this
-unless context.enable_workflow
-  directory "#{cookbook_dir}/.delivery"
-
-  # Adding the delivery local-mode config
-  cookbook_file "#{cookbook_dir}/.delivery/project.toml" do
-    source 'delivery-project.toml'
-    action :create_if_missing
-  end
-end
-
 # git
 if context.have_git
   unless context.skip_git_init
@@ -183,5 +171,3 @@ if context.have_git
     end
   end
 end
-
-include_recipe '::build_cookbook' if context.enable_workflow
