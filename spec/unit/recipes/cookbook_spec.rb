@@ -103,7 +103,7 @@ chef_version      '>= 16.0'
 version           '0.1.0'
 
 supports          'centos', '~> 7.0'
-supports          'centos', '~> 8.0'
+supports          'centos_stream', '~> 8.0'
 EOF
     it { expect(chef_run).to render_file(file.name).with_content(file_content) }
   end
@@ -199,7 +199,7 @@ verifier:
   name: inspec
 
 provisioner:
-  name: chef_zero
+  name: chef_infra
   enforce_idempotency: true
   multiple_converge: 2
   deprecations_as_errors: true
