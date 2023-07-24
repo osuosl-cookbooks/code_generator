@@ -38,15 +38,15 @@ describe 'code_generator::recipe' do
         .with_content(/^describe 'test-cookbook::foo' do$/)
     end
   end
-  it "creates #{base_dir}/test/integration/foo/inspec directory" do
-    expect(chef_run).to create_directory(File.join(base_dir, 'test', 'integration', 'foo', 'inspec'))
+  it do
+    expect(chef_run).to create_directory(File.join(base_dir, 'test', 'integration', 'foo', 'controls'))
   end
-  it "creates #{base_dir}/spec/unit/recipes directory" do
+  it do
     expect(chef_run).to create_directory(File.join(base_dir, 'spec', 'unit', 'recipes'))
   end
-  it "creates #{base_dir}/test/integration/foo/inspec/foo_spec.rb if missing" do
+  it do
     expect(chef_run).to create_template_if_missing(
-      File.join(base_dir, 'test', 'integration', 'foo', 'inspec', 'foo_spec.rb'))
+      File.join(base_dir, 'test', 'integration', 'foo', 'controls', 'foo.rb'))
   end
   it do
     expect(chef_run).to_not create_template_if_missing('/tmp/test-cookbook/test/smoke/default/foo.rb')

@@ -23,7 +23,7 @@ describe 'code_generator::cookbook' do
   %w(
     recipes
     spec/unit/recipes
-    test/integration/default/inspec
+    test/integration/default/controls
   ).each do |d|
     it "creates #{base_dir}/#{d} directory" do
       expect(chef_run).to create_directory(File.join(base_dir, d))
@@ -40,8 +40,13 @@ describe 'code_generator::cookbook' do
         File.join(base_dir, d))
     end
   end
-  it do
-    expect(chef_run).to create_template_if_missing("#{base_dir}/test/integration/default/inspec/default_spec.rb")
+  %w(
+    controls/default.rb
+    inspec.yml
+  ).each do |f|
+    it do
+      expect(chef_run).to create_template_if_missing("#{base_dir}/test/integration/default/#{f}")
+    end
   end
   %w(
     chefignore
@@ -54,36 +59,14 @@ describe 'code_generator::cookbook' do
   describe "#{base_dir}/spec/unit/recipes/default_spec.rb" do
     let(:file) { chef_run.template("#{base_dir}/spec/unit/recipes/default_spec.rb") }
     file_content = <<-EOF
-#
-# Cookbook:: test-cookbook
-# Spec:: default
-#
-# Copyright:: #{Time.new.year}, Oregon State University
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 require_relative '../../spec_helper'
 
 describe 'test-cookbook::default' do
-  ALL_PLATFORMS.each do |p|
-    context "\#{p[:platform]} \#{p[:version]}" do
-      cached(:chef_run) do
-        ChefSpec::SoloRunner.new(p).converge(described_recipe)
-      end
-      it 'converges successfully' do
-        expect { chef_run }.to_not raise_error
-      end
-    end
+  platform 'almalinux', '8'
+  cached(:subject) { chef_run }
+
+  it 'converges successfully' do
+    expect { chef_run }.to_not raise_error
   end
 end
 EOF
@@ -99,11 +82,10 @@ license           'Apache-2.0'
 description       'Installs/Configures test-cookbook'
 issues_url        'https://github.com/osuosl-cookbooks/test-cookbook/issues'
 source_url        'https://github.com/osuosl-cookbooks/test-cookbook'
-chef_version      '>= 16.0'
+chef_version      '>= 17.0'
 version           '0.1.0'
 
-supports          'centos', '~> 7.0'
-supports          'centos_stream', '~> 8.0'
+supports          'almalinux', '~> 8.0'
 EOF
     it { expect(chef_run).to render_file(file.name).with_content(file_content) }
   end
