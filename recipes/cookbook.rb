@@ -100,12 +100,18 @@ template "#{cookbook_dir}/kitchen.yml" do
 end
 
 # InSpec
-directory "#{cookbook_dir}/test/integration/default/inspec" do
+directory "#{cookbook_dir}/test/integration/default/controls" do
   recursive true
 end
 
-template "#{cookbook_dir}/test/integration/default/inspec/default_spec.rb" do
+template "#{cookbook_dir}/test/integration/default/controls/default.rb" do
   source 'inspec_default_test.rb.erb'
+  helpers(ChefCLI::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
+template "#{cookbook_dir}/test/integration/default/inspec.yml" do
+  source 'inspec.yml.erb'
   helpers(ChefCLI::Generator::TemplateHelper)
   action :create_if_missing
 end
