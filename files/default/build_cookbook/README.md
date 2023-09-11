@@ -115,7 +115,7 @@ Recipe: test::default
 Running handlers:
 Running handlers complete
 Chef Infra Client finished, 3/32 resources updated in 54.665445968 seconds
-Finished converging <default-centos-8> (1m26.83s).
+Finished converging <default-almalinux-8> (1m26.83s).
 ```
 
 Victory is ours! Our verify phase passed on the build nodes.

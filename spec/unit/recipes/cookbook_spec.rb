@@ -2,7 +2,7 @@ require_relative '../../spec_helper'
 
 describe 'code_generator::cookbook' do
   cached(:chef_run) do
-    ChefSpec::SoloRunner.new(CENTOS_8).converge(described_recipe)
+    ChefSpec::SoloRunner.new(ALMA_8).converge(described_recipe)
   end
   include_context 'common_stubs'
   base_dir = '/tmp/test-cookbook'
@@ -100,7 +100,7 @@ TODO: Enter the cookbook description here.
 
 ### Platforms
 
-- CentOS 7+
+- AlmaLinux 8+
 
 ### Cookbooks
 
@@ -112,12 +112,12 @@ TODO: Enter the cookbook description here.
 
 ## Contributing
 
-1. Fork the repository on Github
+1. Fork the repository on GitHub
 1. Create a named feature branch (like `username/add_component_x`)
 1. Write tests for your change
 1. Write your change
 1. Run the tests, ensuring they all pass
-1. Submit a Pull Request using Github
+1. Submit a pull request on GitHub
 
 ## License and Authors
 
