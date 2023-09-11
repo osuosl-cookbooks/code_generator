@@ -2,15 +2,13 @@ Code Generator Cookbook
 =======================
 
 This cookbook is used to generate new cookbooks, recipes, attributes,
-lwrps, policy files, and basically any resource chef provides. The basic
-invocation from the chef-repo is:
-
+lwrps, policy files, and basically any resource chef provides.
 First, ensure you have this set in your ``~/.chef/knife.rb``:
 ```ruby
 chefcli[:generator_cookbook] = '/opt/code_generator/code_generator'
 ```
-
-
+The basic
+invocation from the chef-repo is:
 ```shell
 chef generate GENERATOR
 ```
