@@ -99,6 +99,14 @@ template "#{cookbook_dir}/kitchen.yml" do
   action :create_if_missing
 end
 
+cookbook_file "#{cookbook_dir}/kitchen.openstack.yml" do
+  action :create_if_missing
+end
+
+cookbook_file "#{cookbook_dir}/kitchen.dokken.yml" do
+  action :create_if_missing
+end
+
 # InSpec
 directory "#{cookbook_dir}/test/integration/default/controls" do
   recursive true
