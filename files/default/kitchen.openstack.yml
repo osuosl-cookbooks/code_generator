@@ -25,3 +25,21 @@ platforms:
       image_ref: "AlmaLinux 8"
     transport:
       username: almalinux
+  - name: almalinux-9
+    driver_plugin: openstack
+    driver_config:
+      image_ref: "AlmaLinux 9"
+    transport:
+      username: almalinux
+  - name: debian-12
+    driver_plugin: openstack
+    driver_config:
+      image_ref: "Debian 12"
+    transport:
+      username: debian
+  - name: ubuntu-24.04
+    driver_plugin: openstack
+    driver_config:
+      image_ref: "Ubuntu 24.04"
+    transport:
+      username: ubuntu

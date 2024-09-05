@@ -9,3 +9,6 @@ description      'Generates Chef code for the OSUOSL'
 version          '1.0.8'
 
 supports         'almalinux', '~> 8.0'
+supports         'almalinux', '~> 9.0'
+supports         'debian', '~> 12.0'
+supports         'ubuntu', '~> 24.04'
