@@ -17,7 +17,7 @@ def run_command(command)
   if File.exist?('Gemfile.lock')
     sh %(bundle exec #{command})
   else
-    sh %(chef exec #{command})
+    sh %(cinc exec #{command})
   end
 end
 
@@ -43,7 +43,7 @@ def gen_ssl_cert
 
   # Self-sign the Certificate
   cert.issuer = name
-  cert.sign(key, OpenSSL::Digest.new('SHA1'))
+  cert.sign(key, OpenSSL::Digest.new('SHA256'))
 
   [cert, key]
 end

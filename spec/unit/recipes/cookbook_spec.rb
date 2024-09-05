@@ -62,11 +62,16 @@ describe 'code_generator::cookbook' do
 require_relative '../../spec_helper'
 
 describe 'test-cookbook::default' do
-  platform 'almalinux', '8'
-  cached(:subject) { chef_run }
+  ALL_PLATFORMS.each do |p|
+    context "#\{p[:platform]\} #\{p[:version]\}" do
+      cached(:chef_run) do
+        ChefSpec::SoloRunner.new(p).converge(described_recipe)
+      end
 
-  it 'converges successfully' do
-    expect { chef_run }.to_not raise_error
+      it 'converges successfully' do
+        expect { chef_run }.to_not raise_error
+      end
+    end
   end
 end
 EOF
@@ -82,10 +87,13 @@ license           'Apache-2.0'
 description       'Installs/Configures test-cookbook'
 issues_url        'https://github.com/osuosl-cookbooks/test-cookbook/issues'
 source_url        'https://github.com/osuosl-cookbooks/test-cookbook'
-chef_version      '>= 17.0'
+chef_version      '>= 18.0'
 version           '0.1.0'
 
 supports          'almalinux', '~> 8.0'
+supports          'almalinux', '~> 9.0'
+supports          'debian', '~> 12.0'
+supports          'ubuntu', '~> 24.04'
 EOF
     it { expect(chef_run).to render_file(file.name).with_content(file_content) }
   end
@@ -177,14 +185,28 @@ EOF
     let(:file) { chef_run.template(File.join(base_dir, 'kitchen.yml')) }
     file_content = <<-EOF
 ---
+driver:
+  name: vagrant
+
 verifier:
   name: inspec
 
+transport:
+  name: rsync
+
 provisioner:
   name: chef_infra
+  product_name: cinc
+  product_version: '18'
   enforce_idempotency: true
   multiple_converge: 2
   deprecations_as_errors: true
+
+platforms:
+  - name: almalinux-8
+  - name: almalinux-9
+  - name: debian-12
+  - name: ubuntu-24.04
 
 suites:
   - name: default
