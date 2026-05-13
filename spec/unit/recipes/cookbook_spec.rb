@@ -63,7 +63,7 @@ require_relative '../../spec_helper'
 
 describe 'test-cookbook::default' do
   ALL_PLATFORMS.each do |p|
-    context "#\{p[:platform]\} #\{p[:version]\}" do
+    context "#\{p[:platform]} #\{p[:version]}" do
       cached(:chef_run) do
         ChefSpec::SoloRunner.new(p).converge(described_recipe)
       end
@@ -90,10 +90,8 @@ source_url        'https://github.com/osuosl-cookbooks/test-cookbook'
 chef_version      '>= 18.0'
 version           '0.1.0'
 
-supports          'almalinux', '~> 8.0'
 supports          'almalinux', '~> 9.0'
-supports          'debian', '~> 12.0'
-supports          'ubuntu', '~> 24.04'
+supports          'almalinux', '~> 10.0'
 EOF
     it { expect(chef_run).to render_file(file.name).with_content(file_content) }
   end
@@ -108,7 +106,7 @@ TODO: Enter the cookbook description here.
 
 ### Platforms
 
-- AlmaLinux 8+
+- AlmaLinux 9+
 
 ### Cookbooks
 
@@ -195,18 +193,15 @@ transport:
   name: rsync
 
 provisioner:
-  name: chef_infra
-  product_name: cinc
-  product_version: '18'
+  name: cinc_infra
+  product_version: 18
   enforce_idempotency: true
   multiple_converge: 2
   deprecations_as_errors: true
 
 platforms:
-  - name: almalinux-8
   - name: almalinux-9
-  - name: debian-12
-  - name: ubuntu-24.04
+  - name: almalinux-10
 
 suites:
   - name: default
