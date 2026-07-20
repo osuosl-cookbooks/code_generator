@@ -1,4 +1,4 @@
-if defined?('ChefSpec')
+if defined?(ChefSpec)
   def write_generator_desc(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:generator_desc,
                                             :write,
