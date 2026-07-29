@@ -61,6 +61,7 @@ Dangerfile
 examples/*
 features/*
 Guardfile
+Jenkinsfile
 kitchen.yml*
 mlc_config.json
 Procfile

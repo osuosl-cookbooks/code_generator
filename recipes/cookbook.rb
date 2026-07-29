@@ -77,6 +77,12 @@ cookbook_file "#{cookbook_dir}/.rubocop.yml" do
   action :create_if_missing
 end
 
+# Jenkinsfile: the osuosl-cookbooks org folder on Jenkins only builds repos
+# that contain one
+cookbook_file "#{cookbook_dir}/Jenkinsfile" do
+  action :create_if_missing
+end
+
 # LICENSE
 template "#{cookbook_dir}/LICENSE" do
   helpers(ChefCLI::Generator::TemplateHelper)
