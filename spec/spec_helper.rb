@@ -6,9 +6,9 @@ require 'chef-cli/command/generator_commands/chef_exts/quieter_doc_formatter'
 require 'chef-cli/command/generator_commands/chef_exts/generator_desc_resource'
 require_relative 'support/matchers'
 
-ALMA_8 = {
+ALMA_10 = {
   platform: 'almalinux',
-  version: '8',
+  version: '10',
   log_level: :warn,
 }.freeze
 

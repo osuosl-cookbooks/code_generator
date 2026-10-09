@@ -2,7 +2,7 @@ require_relative '../../spec_helper'
 
 describe 'code_generator::cookbook' do
   cached(:chef_run) do
-    ChefSpec::SoloRunner.new(ALMA_8).converge(described_recipe)
+    ChefSpec::SoloRunner.new(ALMA_10).converge(described_recipe)
   end
   include_context 'common_stubs'
   base_dir = '/tmp/test-cookbook'

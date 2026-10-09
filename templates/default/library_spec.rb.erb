@@ -1,0 +1,6 @@
+require_relative '../../spec_helper'
+require_relative '../../../libraries/<%= @library_name %>'
+
+describe <%= @cookbook_class_name %>::Cookbook::<%= @helper_class_name %> do
+  subject { Object.new.extend(described_class) }
+end

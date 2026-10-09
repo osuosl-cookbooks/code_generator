@@ -1,19 +1,30 @@
 context = ChefCLI::Generator.context
 cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
+library_name = context.new_file_basename
 libraries_dir = File.join(cookbook_dir, 'libraries')
-helpers_path = File.join(cookbook_dir, 'libraries', "#{context.new_file_basename}.rb")
+spec_dir = File.join(cookbook_dir, 'spec', 'unit', 'libraries')
+helper_variables = {
+  cookbook_class_name: osl_camelize(context.cookbook_name),
+  helper_class_name: 'Helpers',
+  library_name: library_name,
+}
 
 directory libraries_dir
 
-def camelize(name)
-  name.to_s.split(/[^a-zA-Z]/).map(&:capitalize).join
-end
-
-cookbook_class_name = camelize(context.cookbook_name)
-helper_class_name = 'Helpers'
-
-template helpers_path do
+template File.join(libraries_dir, "#{library_name}.rb") do
   source 'helpers.rb.erb'
   helpers(ChefCLI::Generator::TemplateHelper)
-  variables(cookbook_class_name: cookbook_class_name, helper_class_name: helper_class_name)
+  variables(helper_variables)
+end
+
+# Chefspec
+directory spec_dir do
+  recursive true
+end
+
+template File.join(spec_dir, "#{library_name}_spec.rb") do
+  source 'library_spec.rb.erb'
+  helpers(ChefCLI::Generator::TemplateHelper)
+  variables(helper_variables)
+  action :create_if_missing
 end
