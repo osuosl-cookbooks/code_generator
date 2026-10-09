@@ -1,4 +1,5 @@
 context = ChefCLI::Generator.context
+osl_defaults!(context)
 cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
 
 silence_chef_formatter unless context.verbose
@@ -9,30 +10,10 @@ generator_desc('Ensuring correct cookbook content')
 directory cookbook_dir
 
 # metadata.rb
-spdx_license =  case context.license
-                when 'apachev2'
-                  'Apache-2.0'
-                when 'mit'
-                  'MIT'
-                when 'gplv2'
-                  'GPL-2.0'
-                when 'gplv3'
-                  'GPL-3.0'
-                else
-                  'All Rights Reserved'
-                end
-
-###
-# OSL site config
-###
-context.license = 'apachev2'
-context.copyright_holder = 'Oregon State University'
-context.email = 'chef@osuosl.org'
-
 template "#{cookbook_dir}/metadata.rb" do
   helpers(ChefCLI::Generator::TemplateHelper)
   variables(
-    spdx_license: spdx_license
+    spdx_license: ChefCLI::Generator::TemplateHelper.license_long(context.license)
   )
   action :create_if_missing
 end
@@ -45,6 +26,12 @@ end
 
 # CHANGELOG
 template "#{cookbook_dir}/CHANGELOG.md" do
+  helpers(ChefCLI::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
+# AGENTS.md
+template "#{cookbook_dir}/AGENTS.md" do
   helpers(ChefCLI::Generator::TemplateHelper)
   action :create_if_missing
 end
@@ -146,7 +133,7 @@ if context.have_git
     generator_desc('Committing cookbook files to git')
 
     execute('initialize-git') do
-      command('git init .')
+      command('git init -b main .')
       cwd cookbook_dir
     end
 

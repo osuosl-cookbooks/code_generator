@@ -15,13 +15,18 @@ ALMA_8 = {
 shared_context 'common_stubs' do
   before do
     stub_command('git init .').and_return(true)
+  end
+
+  # Once per group: ChefSpec renders lazily, so a per-example reset would undo
+  # the OSL defaults the converge applied.
+  before(:all) do
     ChefCLI::Generator.reset
     ChefCLI::Generator.add_attr_to_context(:cookbook_name, 'test-cookbook')
     ChefCLI::Generator.add_attr_to_context(:cookbook_root, '/tmp')
-    ChefCLI::Generator.add_attr_to_context(:copyright_holder, 'Oregon State University')
-    ChefCLI::Generator.add_attr_to_context(:email, 'chef@osuosl.org')
+    ChefCLI::Generator.add_attr_to_context(:copyright_holder, 'Example Holder')
+    ChefCLI::Generator.add_attr_to_context(:email, 'nobody@example.com')
     ChefCLI::Generator.add_attr_to_context(:have_git, true)
-    ChefCLI::Generator.add_attr_to_context(:license, 'apachev2')
+    ChefCLI::Generator.add_attr_to_context(:license, 'all_rights')
     ChefCLI::Generator.add_attr_to_context(:new_file_basename, 'default')
     ChefCLI::Generator.add_attr_to_context(:recipe_name, 'default')
     ChefCLI::Generator.add_attr_to_context(:content_source, nil)

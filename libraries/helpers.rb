@@ -1,5 +1,11 @@
 module CodeGenerator
   module Helpers
+    def osl_defaults!(context)
+      context.license = 'apachev2'
+      context.copyright_holder = 'Oregon State University'
+      context.email = 'chef@osuosl.org'
+    end
+
     # exit! because chef-cli wraps raise and exit in a 70-line compile-error
     # report that buries the message.
     def osl_unsupported!(command)

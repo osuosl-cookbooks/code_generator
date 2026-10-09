@@ -40,6 +40,17 @@ describe 'code_generator::cookbook' do
         File.join(base_dir, d))
     end
   end
+  it { expect(chef_run).to create_template_if_missing("#{base_dir}/AGENTS.md") }
+  it do
+    expect(chef_run).to render_file("#{base_dir}/AGENTS.md").with_content(
+      /^TODO: what test-cookbook manages/
+    )
+  end
+  it do
+    expect(chef_run).to render_file("#{base_dir}/test/integration/default/inspec.yml").with_content(
+      "---\nname: default\nversion: 0.1.0\n"
+    )
+  end
   %w(
     controls/default.rb
     inspec.yml
@@ -90,8 +101,9 @@ source_url        'https://github.com/osuosl-cookbooks/test-cookbook'
 chef_version      '>= 18.0'
 version           '0.1.0'
 
-supports          'almalinux', '~> 9.0'
-supports          'almalinux', '~> 10.0'
+# One line, not one per release: supports keys on the platform name, so
+# a second almalinux line silently replaces the first.
+supports          'almalinux', '>= 9.0'
 EOF
     it { expect(chef_run).to render_file(file.name).with_content(file_content) }
   end
@@ -106,7 +118,8 @@ TODO: Enter the cookbook description here.
 
 ### Platforms
 
-- AlmaLinux 9+
+- AlmaLinux 9
+- AlmaLinux 10
 
 ### Cookbooks
 
@@ -116,9 +129,18 @@ TODO: Enter the cookbook description here.
 
 ## Recipes
 
+## Testing
+
+```console
+$ cinc exec cookstyle
+$ rm -f Berksfile.lock && cinc exec rspec
+$ KITCHEN_LOCAL_YAML=kitchen.openstack.yml kitchen test default-almalinux-10
+```
+
+`kitchen.dokken.yml` runs the same suites in containers for quick checks.
+
 ## Contributing
 
-1. Fork the repository on GitHub
 1. Create a named feature branch (like `username/add_component_x`)
 1. Write tests for your change
 1. Write your change
@@ -154,8 +176,8 @@ EOF
 
 This file is used to list changes made in each version of the test-cookbook cookbook.
 
-## 0.1.0
-
+0.1.0
+-----
 - Initial release
 EOF
     it { expect(chef_run).to render_file(file.name).with_content(file_content) }
@@ -234,4 +256,5 @@ EOF
       expect(chef_run).to run_execute(e)
     end
   end
+  it { expect(chef_run).to run_execute('initialize-git').with(command: 'git init -b main .') }
 end

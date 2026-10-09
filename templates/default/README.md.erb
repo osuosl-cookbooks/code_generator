@@ -6,7 +6,8 @@ TODO: Enter the cookbook description here.
 
 ### Platforms
 
-- AlmaLinux 9+
+- AlmaLinux 9
+- AlmaLinux 10
 
 ### Cookbooks
 
@@ -16,9 +17,18 @@ TODO: Enter the cookbook description here.
 
 ## Recipes
 
+## Testing
+
+```console
+$ cinc exec cookstyle
+$ rm -f Berksfile.lock && cinc exec rspec
+$ KITCHEN_LOCAL_YAML=kitchen.openstack.yml kitchen test default-almalinux-10
+```
+
+`kitchen.dokken.yml` runs the same suites in containers for quick checks.
+
 ## Contributing
 
-1. Fork the repository on GitHub
 1. Create a named feature branch (like `username/add_component_x`)
 1. Write tests for your change
 1. Write your change
