@@ -1,6 +1,6 @@
 context = ChefCLI::Generator.context
 osl_defaults!(context)
-cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
+cookbook_dir = osl_cookbook_dir!(context)
 resource_name = context.new_file_basename.tr('-', '_')
 fixture = osl_fixture(cookbook_dir, context.cookbook_name, (context.fixture if context.respond_to?(:fixture)))
 inspec_dir = File.join(cookbook_dir, 'test', 'integration', resource_name)
@@ -12,6 +12,7 @@ template File.join(cookbook_dir, 'resources', "#{resource_name}.rb") do
   source 'resource.rb.erb'
   helpers(ChefCLI::Generator::TemplateHelper)
   variables(resource_name: resource_name)
+  action :create_if_missing
 end
 
 # Fixture cookbook, created on first use and wired into the Berksfile

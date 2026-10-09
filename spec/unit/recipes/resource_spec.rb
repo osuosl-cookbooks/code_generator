@@ -24,6 +24,7 @@ describe 'code_generator::resource' do
     end
 
     it { expect(chef_run).to create_directory("#{base_dir}/resources") }
+    it { expect(chef_run).to create_template_if_missing("#{base_dir}/resources/osl_foo.rb") }
 
     it do
       expect(chef_run).to render_file("#{base_dir}/resources/osl_foo.rb").with_content(<<~EOF)
@@ -156,5 +157,35 @@ describe 'code_generator::resource' do
         /^control 'osl_foo_bar' do$/
       )
     end
+  end
+end
+
+describe 'code_generator::resource', 'with . as the cookbook path' do
+  cached(:chef_run) { ChefSpec::SoloRunner.new(ALMA_10).converge('code_generator::resource') }
+  include_context 'common_stubs'
+  base_dir = '/tmp/osl-dot/.'
+  fixture_dir = "#{base_dir}/test/cookbooks/dot_test"
+  before do
+    allow(File).to receive(:exist?).and_call_original
+    allow(File).to receive(:exist?).with("#{base_dir}/metadata.rb").and_return(true)
+    allow(File).to receive(:read).and_call_original
+    allow(File).to receive(:read).with("#{base_dir}/metadata.rb").and_return("name 'osl-dot'\n")
+    allow(File).to receive(:exist?).with("#{base_dir}/Berksfile").and_return(true)
+  end
+  before(:all) do
+    ChefCLI::Generator.add_attr_to_context(:cookbook_root, '/tmp/osl-dot')
+    ChefCLI::Generator.add_attr_to_context(:cookbook_name, '.')
+    ChefCLI::Generator.add_attr_to_context(:recipe_name, 'osl_dot_thing')
+    ChefCLI::Generator.add_attr_to_context(:new_file_basename, 'osl_dot_thing')
+    ChefCLI::Generator.add_attr_to_context(:fixture, nil)
+  end
+
+  it { expect(chef_run).to render_file("#{fixture_dir}/metadata.rb").with_content(/^depends 'osl-dot'$/) }
+  it { expect(chef_run).to run_ruby_block('add dot_test to the Berksfile') }
+
+  it do
+    expect(chef_run).to render_file("#{base_dir}/spec/unit/resources/osl_dot_thing_spec.rb").with_content(
+      /^describe 'dot_test::osl_dot_thing' do$/
+    )
   end
 end

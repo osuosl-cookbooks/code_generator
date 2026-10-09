@@ -68,8 +68,8 @@ describe 'code_generator::cookbook' do
     chefignore
     .gitignore
   ).each do |d|
-    it "creates #{base_dir}/#{d} file" do
-      expect(chef_run).to create_cookbook_file(File.join(base_dir, d))
+    it "creates #{base_dir}/#{d} file if missing" do
+      expect(chef_run).to create_cookbook_file_if_missing(File.join(base_dir, d))
     end
   end
   describe "#{base_dir}/spec/unit/recipes/default_spec.rb" do

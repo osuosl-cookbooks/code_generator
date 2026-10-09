@@ -14,6 +14,10 @@ module CodeGenerator
       Kernel.exit!(1)
     end
 
+    def osl_warn_kept(path, source)
+      warn "#{path} already exists and was not replaced; remove it first to copy -s #{source}"
+    end
+
     def osl_camelize(name)
       name.to_s.split(/[^a-zA-Z]/).map(&:capitalize).join
     end
@@ -25,7 +29,15 @@ module CodeGenerator
     def osl_cookbook_name(dir)
       metadata = File.join(dir, 'metadata.rb')
       name = File.read(metadata)[/^name\s+['"]([^'"]+)['"]/, 1] if File.exist?(metadata)
-      name || File.basename(dir)
+      name || File.basename(File.expand_path(dir))
+    end
+
+    # chef-cli names the cookbook after its path's basename, `.` included;
+    # take the name from metadata.rb instead.
+    def osl_cookbook_dir!(context)
+      dir = File.join(context.cookbook_root, context.cookbook_name)
+      context.cookbook_name = osl_cookbook_name(dir)
+      dir
     end
 
     # The fixture cookbook a new resource's test recipe goes in, as

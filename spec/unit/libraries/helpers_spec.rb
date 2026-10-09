@@ -15,6 +15,30 @@ describe CodeGenerator::Helpers do
     it { expect(subject.osl_camelize('osl-foo_bar')).to eq 'OslFooBar' }
   end
 
+  describe '#osl_cookbook_dir!' do
+    around do |example|
+      Dir.mktmpdir do |dir|
+        @dir = dir
+        example.run
+      end
+    end
+
+    it 'names the cookbook from metadata.rb when chef-cli was given .' do
+      FileUtils.mkdir_p(File.join(@dir, 'osl-dot'))
+      File.write(File.join(@dir, 'osl-dot', 'metadata.rb'), "name 'osl-dot'\n")
+      context = Struct.new(:cookbook_root, :cookbook_name).new(File.join(@dir, 'osl-dot'), '.')
+      expect(subject.osl_cookbook_dir!(context)).to eq File.join(@dir, 'osl-dot', '.')
+      expect(context.cookbook_name).to eq 'osl-dot'
+    end
+
+    it 'falls back to the expanded directory name without metadata.rb' do
+      FileUtils.mkdir_p(File.join(@dir, 'osl-bare'))
+      context = Struct.new(:cookbook_root, :cookbook_name).new(File.join(@dir, 'osl-bare'), '.')
+      subject.osl_cookbook_dir!(context)
+      expect(context.cookbook_name).to eq 'osl-bare'
+    end
+  end
+
   describe '#osl_fixture' do
     around do |example|
       Dir.mktmpdir do |dir|

@@ -9,6 +9,7 @@ describe 'code_generator::helpers' do
   end
 
   it { expect(chef_run).to create_directory("#{base_dir}/libraries") }
+  it { expect(chef_run).to create_template_if_missing("#{base_dir}/libraries/helpers.rb") }
 
   it do
     expect(chef_run).to render_file("#{base_dir}/libraries/helpers.rb").with_content(<<~EOF)
@@ -36,4 +37,23 @@ describe 'code_generator::helpers' do
       end
     EOF
   end
+end
+
+describe 'code_generator::helpers', 'with . as the cookbook path' do
+  cached(:chef_run) { ChefSpec::SoloRunner.new(ALMA_10).converge('code_generator::helpers') }
+  include_context 'common_stubs'
+  base_dir = '/tmp/osl-dot/.'
+  before do
+    allow(File).to receive(:exist?).and_call_original
+    allow(File).to receive(:exist?).with("#{base_dir}/metadata.rb").and_return(true)
+    allow(File).to receive(:read).and_call_original
+    allow(File).to receive(:read).with("#{base_dir}/metadata.rb").and_return("name 'osl-dot'\n")
+  end
+  before(:all) do
+    ChefCLI::Generator.add_attr_to_context(:cookbook_root, '/tmp/osl-dot')
+    ChefCLI::Generator.add_attr_to_context(:cookbook_name, '.')
+    ChefCLI::Generator.add_attr_to_context(:new_file_basename, 'helpers')
+  end
+
+  it { expect(chef_run).to render_file("#{base_dir}/libraries/helpers.rb").with_content(/^module OslDot$/) }
 end

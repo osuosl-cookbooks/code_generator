@@ -1,6 +1,6 @@
 context = ChefCLI::Generator.context
 osl_defaults!(context)
-cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
+cookbook_dir = osl_cookbook_dir!(context)
 recipe_path = File.join(cookbook_dir, 'recipes', "#{context.new_file_basename}.rb")
 spec_helper_path = File.join(cookbook_dir, 'spec', 'spec_helper.rb')
 spec_dir = File.join(cookbook_dir, 'spec', 'unit', 'recipes')
@@ -45,4 +45,5 @@ end
 template recipe_path do
   source 'recipe.rb.erb'
   helpers(ChefCLI::Generator::TemplateHelper)
+  action :create_if_missing
 end

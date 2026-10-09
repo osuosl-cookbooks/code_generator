@@ -1,5 +1,5 @@
 context = ChefCLI::Generator.context
-cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
+cookbook_dir = osl_cookbook_dir!(context)
 library_name = context.new_file_basename
 libraries_dir = File.join(cookbook_dir, 'libraries')
 spec_dir = File.join(cookbook_dir, 'spec', 'unit', 'libraries')
@@ -15,6 +15,7 @@ template File.join(libraries_dir, "#{library_name}.rb") do
   source 'helpers.rb.erb'
   helpers(ChefCLI::Generator::TemplateHelper)
   variables(helper_variables)
+  action :create_if_missing
 end
 
 # Chefspec

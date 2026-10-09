@@ -42,7 +42,9 @@ cookbook_file "#{cookbook_dir}/Rakefile" do
 end
 
 # chefignore
-cookbook_file "#{cookbook_dir}/chefignore"
+cookbook_file "#{cookbook_dir}/chefignore" do
+  action :create_if_missing
+end
 
 # Berks
 cookbook_file "#{cookbook_dir}/Berksfile" do
@@ -141,6 +143,7 @@ if context.have_git
 
   cookbook_file "#{cookbook_dir}/.gitignore" do
     source 'gitignore'
+    action :create_if_missing
   end
 
   unless context.skip_git_init
