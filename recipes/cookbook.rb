@@ -25,7 +25,6 @@ spdx_license =  case context.license
 ###
 # OSL site config
 ###
-context.use_policyfile = false
 context.license = 'apachev2'
 context.copyright_holder = 'Oregon State University'
 context.email = 'chef@osuosl.org'
@@ -58,17 +57,9 @@ end
 # chefignore
 cookbook_file "#{cookbook_dir}/chefignore"
 
-if context.use_policyfile
-  # Policyfile
-  template "#{cookbook_dir}/Policyfile.rb" do
-    source 'Policyfile.rb.erb'
-    helpers(ChefCLI::Generator::TemplateHelper)
-  end
-else
-  # Berks
-  cookbook_file "#{cookbook_dir}/Berksfile" do
-    action :create_if_missing
-  end
+# Berks
+cookbook_file "#{cookbook_dir}/Berksfile" do
+  action :create_if_missing
 end
 
 # rubocop
@@ -92,15 +83,7 @@ end
 
 # Test Kitchen
 template "#{cookbook_dir}/kitchen.yml" do
-  if context.kitchen == 'dokken'
-    # kitchen-dokken configuration works with berkshelf and policyfiles
-    source 'kitchen_dokken.yml.erb'
-  elsif context.use_policyfile
-    source 'kitchen_policyfile.yml.erb'
-  else
-    source 'kitchen.yml.erb'
-  end
-
+  source 'kitchen.yml.erb'
   helpers(ChefCLI::Generator::TemplateHelper)
   action :create_if_missing
 end
@@ -136,12 +119,7 @@ directory "#{cookbook_dir}/spec/unit/recipes" do
 end
 
 cookbook_file "#{cookbook_dir}/spec/spec_helper.rb" do
-  if context.use_policyfile
-    source 'spec_helper_policyfile.rb'
-  else
-    source 'spec_helper.rb'
-  end
-
+  source 'spec_helper.rb'
   action :create_if_missing
 end
 
