@@ -24,14 +24,25 @@ the first config file it finds, `config.rb` before `knife.rb`, and the nearest
 `.cinc/` directory before the one in your home directory, so creating a second
 file hides the first.
 
+The generator needs a directory of its own. chef-cli uses its parent
+directory as the whole cookbook path and loads everything beside it as a
+cookbook, so a checkout next to other repositories fails with `Cookbook
+merging is no longer supported`. `/opt/osuosl/` holds nothing else.
+
 On a machine without the `workstation::code_generator` checkout, `cinc
 generate` inside chef-repo fails with `Cookbook code_generator not found`.
-Clone this repository anywhere outside `osuosl-cookbooks/` and pass its path
-with `-g`, which overrides any config file.
+Clone this repository into an otherwise empty directory and pass its path
+with `-g`, which overrides any config file:
 
-Do not point `-g` at `osuosl-cookbooks/code_generator` while generating a
-cookbook in `osuosl-cookbooks/`: chef-cli refuses to create a cookbook in the
-generator's own parent directory.
+```console
+$ mkdir -p ~/code_generator-local
+$ git clone git@github.com:osuosl-cookbooks/code_generator.git ~/code_generator-local/code_generator
+$ cinc generate cookbook -g ~/code_generator-local/code_generator osl-foo
+```
+
+That is also why `-g` cannot point at `osuosl-cookbooks/code_generator`:
+chef-cli would load every cookbook beside it, and it refuses to create a
+cookbook in the generator's own parent directory.
 
 ## Commands
 
