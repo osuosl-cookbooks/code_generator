@@ -42,6 +42,11 @@ describe 'code_generator::cookbook' do
   end
   it { expect(chef_run).to create_template_if_missing("#{base_dir}/AGENTS.md") }
   it do
+    expect(chef_run).to render_file("#{base_dir}/kitchen.dokken.yml").with_content(
+      /^  chef_version: <%= ENV\['CHEF_VERSION'\] \|\| '19' %>$/
+    )
+  end
+  it do
     expect(chef_run).to render_file("#{base_dir}/AGENTS.md").with_content(
       /^TODO: what test-cookbook manages/
     )
@@ -216,7 +221,7 @@ transport:
 
 provisioner:
   name: cinc_infra
-  product_version: 19
+  product_version: '19'
   enforce_idempotency: true
   multiple_converge: 2
   deprecations_as_errors: true
