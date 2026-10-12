@@ -13,6 +13,8 @@ work out from the code.
 - **Cookstyle:** `cinc exec cookstyle` (not raw `cookstyle`). `-a` to auto-fix.
 - **ChefSpec:** `rm -f Berksfile.lock` first, then `cinc exec rspec` from the
   cookbook root.
+- **rake:** the README's `rake` runs cookstyle and ChefSpec together for
+  humans; run the two commands directly.
 - **Kitchen:** `kitchen.yml` uses the **`cinc_infra`** provisioner; do not
   "modernize" it to `chef_infra` with `product_name: cinc`, that is the org
   convention. `kitchen.openstack.yml` and `kitchen.dokken.yml` are driver

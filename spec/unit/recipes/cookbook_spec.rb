@@ -123,8 +123,7 @@ TODO: Enter the cookbook description here.
 
 ### Platforms
 
-- AlmaLinux 9
-- AlmaLinux 10
+- AlmaLinux 9+
 
 ### Cookbooks
 
@@ -137,14 +136,16 @@ TODO: Enter the cookbook description here.
 ## Testing
 
 ```console
-$ cinc exec cookstyle
-$ rm -f Berksfile.lock && cinc exec rspec
-$ KITCHEN_LOCAL_YAML=kitchen.openstack.yml kitchen test default-almalinux-10
+$ rake
+$ kitchen test
 ```
 
-`kitchen.dokken.yml` runs the same suites in containers for quick checks.
+`rake` runs Cookstyle and ChefSpec. `KITCHEN_LOCAL_YAML=kitchen.dokken.yml kitchen test` runs every suite in Docker
+containers. OSL staff use `kitchen.openstack.yml`; with neither, `kitchen.yml`'s Vagrant driver is used.
 
 ## Contributing
+
+If you are a non-OSL contributor, welcome! Please start by [forking](https://docs.github.com/en/pull-requests/how-tos/work-with-forks/fork-a-repo) the repository.
 
 1. Create a named feature branch (like `username/add_component_x`)
 1. Write tests for your change
