@@ -9,30 +9,13 @@ headers for Oregon State University.
 
 ## Setup
 
-Workstations get a checkout of this repository's default branch at
-`/opt/osuosl/code_generator` from the `workstation::code_generator` recipe.
-`chef-repo/.cinc/knife.rb` points `cinc generate` at it, so commands run
-anywhere inside chef-repo need no flag. Elsewhere, pass it explicitly:
+Workstations at OSL get a checkout of this repository at
+`/opt/osuosl/code_generator`, and OSL's chef-repo points `cinc generate` at
+it, so commands run inside chef-repo need no flag.
 
-```console
-$ cinc generate cookbook -g /opt/osuosl/code_generator osl-foo
-```
-
-or add `chefcli[:generator_cookbook] = '/opt/osuosl/code_generator'` to the
-`~/.cinc/knife.rb` or `~/.cinc/config.rb` you already have. Cinc reads only
-the first config file it finds, `config.rb` before `knife.rb`, and the nearest
-`.cinc/` directory before the one in your home directory, so creating a second
-file hides the first.
-
-The generator needs a directory of its own. chef-cli uses its parent
-directory as the whole cookbook path and loads everything beside it as a
-cookbook, so a checkout next to other repositories fails with `Cookbook
-merging is no longer supported`. `/opt/osuosl/` holds nothing else.
-
-On a machine without the `workstation::code_generator` checkout, `cinc
-generate` inside chef-repo fails with `Cookbook code_generator not found`.
-Clone this repository into an otherwise empty directory and pass its path
-with `-g`, which overrides any config file:
+If you are not using an OSL workstation, clone this repository into an
+otherwise empty directory and pass its path with `-g`, which overrides any
+config file:
 
 ```console
 $ mkdir -p ~/code_generator-local
@@ -40,17 +23,14 @@ $ git clone git@github.com:osuosl-cookbooks/code_generator.git ~/code_generator-
 $ cinc generate cookbook -g ~/code_generator-local/code_generator osl-foo
 ```
 
-That is also why `-g` cannot point at `osuosl-cookbooks/code_generator`:
-chef-cli would load every cookbook beside it, and it refuses to create a
-cookbook in the generator's own parent directory.
-
 ## Commands
 
 Run these from `osuosl-cookbooks/`, naming the cookbook. Inside the cookbook,
 drop the cookbook argument (`cinc generate recipe bar`) or pass `.`; the name
 comes from `metadata.rb` either way. A generator never overwrites a file that
-already exists, so re-running one only fills in what is missing, such as the
-spec and fixture recipe for an older resource.
+already exists, so re-running one only fills in what is missing, for example
+the ChefSpec spec and fixture-cookbook test recipe for a resource that
+predates them.
 
 | Command | Writes |
 |---|---|
@@ -80,25 +60,43 @@ $ cd osl-foo && git init -b main && git add . && git commit -m 'Initial commit'
 `repo`, `policyfile`, `input`, `profile` and `waiver` are not supported: OSL
 cookbooks use Berkshelf and the roles and environments in chef-repo.
 
-## Testing
+## Contributing
+
+To contribute to the `code_generator` cookbook, first clone the repository and
+make your edits in a new branch.
+
+To test your changes, run
 
 ```console
-$ cinc exec cookstyle
-$ rm -f Berksfile.lock && cinc exec rspec
+$ rake
 ```
 
 The specs assert what each generator recipe declares; they cannot run
 `ruby_block` bodies or prove the output is clean. Before opening a PR,
 generate a cookbook from your working tree and test that too. The copy must
-live in a directory named `code_generator`:
+be named `code_generator` and sit alone in its directory (see How it works):
 
 ```console
-$ CG=$(mktemp -d) && mkdir $CG/gen && cp -r . $CG/code_generator && cd $CG/gen
-$ cinc generate cookbook -g $CG/code_generator osl-sample
-$ cinc generate resource -g $CG/code_generator osl-sample osl_sample_thing
-$ cd osl-sample && cinc exec cookstyle && cinc exec rspec
+$ CG=$(mktemp -d) && mkdir $CG/gen $CG/generator && cp -r . $CG/generator/code_generator
+$ cd $CG/gen && cinc generate cookbook -g $CG/generator/code_generator osl-sample
+$ cinc generate resource -g $CG/generator/code_generator osl-sample osl_sample_thing
+$ cd osl-sample && rake
 $ cinc exec inspec check test/integration/osl_sample_thing
 ```
+
+### How it works
+
+- chef-cli uses the generator's parent directory as the whole cookbook path
+  and loads everything beside it as a cookbook. That is why the generator
+  needs a directory of its own: a checkout next to other repositories fails
+  with `Cookbook merging is no longer supported`.
+- For the same reason `-g` cannot point at `osuosl-cookbooks/code_generator`,
+  and chef-cli also refuses to create a cookbook in the generator's own
+  parent directory.
+- `-g` wins over `chefcli[:generator_cookbook]` in a config file. Cinc reads
+  only the first config file it finds, `config.rb` before `knife.rb` and the
+  nearest `.cinc/` directory before the one in your home directory, so add
+  the setting to the file you already have rather than creating a second one.
 
 ## License and Authors
 
