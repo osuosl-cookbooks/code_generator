@@ -24,7 +24,7 @@ $ kitchen test
 ```
 
 `rake` runs Cookstyle and ChefSpec. `KITCHEN_LOCAL_YAML=kitchen.dokken.yml kitchen test` runs every suite in Docker
-containers. OSL staff use `kitchen.openstack.yml`; with neither, `kitchen.yml`'s Vagrant driver is used.
+containers. OSL staff working on the workstations should use `KITCHEN_GLOBAL_YAML` and run `kitchen test` directly, as outlined in our internal docs.
 
 ## Contributing
 

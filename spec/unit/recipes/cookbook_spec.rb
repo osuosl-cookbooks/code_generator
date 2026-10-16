@@ -106,8 +106,6 @@ source_url        'https://github.com/osuosl-cookbooks/test-cookbook'
 chef_version      '>= 18.0'
 version           '0.1.0'
 
-# One line, not one per release: supports keys on the platform name, so
-# a second almalinux line silently replaces the first.
 supports          'almalinux', '>= 9.0'
 EOF
     it { expect(chef_run).to render_file(file.name).with_content(file_content) }
@@ -141,7 +139,7 @@ $ kitchen test
 ```
 
 `rake` runs Cookstyle and ChefSpec. `KITCHEN_LOCAL_YAML=kitchen.dokken.yml kitchen test` runs every suite in Docker
-containers. OSL staff use `kitchen.openstack.yml`; with neither, `kitchen.yml`'s Vagrant driver is used.
+containers. OSL staff working on the workstations should use `KITCHEN_GLOBAL_YAML` and run `kitchen test` directly, as outlined in our internal docs.
 
 ## Contributing
 
