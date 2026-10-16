@@ -1,5 +1,5 @@
 context = ChefCLI::Generator.context
-cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
+cookbook_dir = osl_cookbook_dir!(context)
 template_dir = File.join(cookbook_dir, 'templates')
 template_filename = context.new_file_basename
 
@@ -16,9 +16,11 @@ directory template_dir do
 end
 
 if context.content_source
+  osl_warn_kept(template_path, context.content_source) if File.exist?(template_path)
 
   file template_path do
     content(IO.read(context.content_source))
+    action :create_if_missing
   end
 
 else
@@ -26,6 +28,7 @@ else
   template template_path do
     source 'template.erb'
     helpers(ChefCLI::Generator::TemplateHelper)
+    action :create_if_missing
   end
 
 end

@@ -2,7 +2,7 @@ require_relative '../../spec_helper'
 
 describe 'code_generator::cookbook' do
   cached(:chef_run) do
-    ChefSpec::SoloRunner.new(ALMA_8).converge(described_recipe)
+    ChefSpec::SoloRunner.new(ALMA_10).converge(described_recipe)
   end
   include_context 'common_stubs'
   base_dir = '/tmp/test-cookbook'
@@ -40,6 +40,22 @@ describe 'code_generator::cookbook' do
         File.join(base_dir, d))
     end
   end
+  it { expect(chef_run).to create_template_if_missing("#{base_dir}/AGENTS.md") }
+  it do
+    expect(chef_run).to render_file("#{base_dir}/kitchen.dokken.yml").with_content(
+      /^  chef_version: <%= ENV\['CHEF_VERSION'\] \|\| '19' %>$/
+    )
+  end
+  it do
+    expect(chef_run).to render_file("#{base_dir}/AGENTS.md").with_content(
+      /^TODO: what test-cookbook manages/
+    )
+  end
+  it do
+    expect(chef_run).to render_file("#{base_dir}/test/integration/default/inspec.yml").with_content(
+      "---\nname: default\nversion: 0.1.0\n"
+    )
+  end
   %w(
     controls/default.rb
     inspec.yml
@@ -52,8 +68,8 @@ describe 'code_generator::cookbook' do
     chefignore
     .gitignore
   ).each do |d|
-    it "creates #{base_dir}/#{d} file" do
-      expect(chef_run).to create_cookbook_file(File.join(base_dir, d))
+    it "creates #{base_dir}/#{d} file if missing" do
+      expect(chef_run).to create_cookbook_file_if_missing(File.join(base_dir, d))
     end
   end
   describe "#{base_dir}/spec/unit/recipes/default_spec.rb" do
@@ -90,8 +106,7 @@ source_url        'https://github.com/osuosl-cookbooks/test-cookbook'
 chef_version      '>= 18.0'
 version           '0.1.0'
 
-supports          'almalinux', '~> 9.0'
-supports          'almalinux', '~> 10.0'
+supports          'almalinux', '>= 9.0'
 EOF
     it { expect(chef_run).to render_file(file.name).with_content(file_content) }
   end
@@ -116,9 +131,20 @@ TODO: Enter the cookbook description here.
 
 ## Recipes
 
+## Testing
+
+```console
+$ rake
+$ kitchen test
+```
+
+`rake` runs Cookstyle and ChefSpec. `KITCHEN_LOCAL_YAML=kitchen.dokken.yml kitchen test` runs every suite in Docker
+containers. OSL staff working on the workstations should use `KITCHEN_GLOBAL_YAML` and run `kitchen test` directly, as outlined in our internal docs.
+
 ## Contributing
 
-1. Fork the repository on GitHub
+If you are a non-OSL contributor, welcome! Please start by [forking](https://docs.github.com/en/pull-requests/how-tos/work-with-forks/fork-a-repo) the repository.
+
 1. Create a named feature branch (like `username/add_component_x`)
 1. Write tests for your change
 1. Write your change
@@ -154,8 +180,8 @@ EOF
 
 This file is used to list changes made in each version of the test-cookbook cookbook.
 
-## 0.1.0
-
+0.1.0
+-----
 - Initial release
 EOF
     it { expect(chef_run).to render_file(file.name).with_content(file_content) }
@@ -194,7 +220,7 @@ transport:
 
 provisioner:
   name: cinc_infra
-  product_version: 19
+  product_version: '19'
   enforce_idempotency: true
   multiple_converge: 2
   deprecations_as_errors: true
@@ -234,4 +260,5 @@ EOF
       expect(chef_run).to run_execute(e)
     end
   end
+  it { expect(chef_run).to run_execute('initialize-git').with(command: 'git init -b main .') }
 end

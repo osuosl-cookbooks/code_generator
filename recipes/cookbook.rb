@@ -1,4 +1,5 @@
 context = ChefCLI::Generator.context
+osl_defaults!(context)
 cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
 
 silence_chef_formatter unless context.verbose
@@ -9,31 +10,10 @@ generator_desc('Ensuring correct cookbook content')
 directory cookbook_dir
 
 # metadata.rb
-spdx_license =  case context.license
-                when 'apachev2'
-                  'Apache-2.0'
-                when 'mit'
-                  'MIT'
-                when 'gplv2'
-                  'GPL-2.0'
-                when 'gplv3'
-                  'GPL-3.0'
-                else
-                  'All Rights Reserved'
-                end
-
-###
-# OSL site config
-###
-context.use_policyfile = false
-context.license = 'apachev2'
-context.copyright_holder = 'Oregon State University'
-context.email = 'chef@osuosl.org'
-
 template "#{cookbook_dir}/metadata.rb" do
   helpers(ChefCLI::Generator::TemplateHelper)
   variables(
-    spdx_license: spdx_license
+    spdx_license: ChefCLI::Generator::TemplateHelper.license_long(context.license)
   )
   action :create_if_missing
 end
@@ -50,25 +30,25 @@ template "#{cookbook_dir}/CHANGELOG.md" do
   action :create_if_missing
 end
 
+# AGENTS.md
+template "#{cookbook_dir}/AGENTS.md" do
+  helpers(ChefCLI::Generator::TemplateHelper)
+  action :create_if_missing
+end
+
 # Rakefile
 cookbook_file "#{cookbook_dir}/Rakefile" do
   action :create_if_missing
 end
 
 # chefignore
-cookbook_file "#{cookbook_dir}/chefignore"
+cookbook_file "#{cookbook_dir}/chefignore" do
+  action :create_if_missing
+end
 
-if context.use_policyfile
-  # Policyfile
-  template "#{cookbook_dir}/Policyfile.rb" do
-    source 'Policyfile.rb.erb'
-    helpers(ChefCLI::Generator::TemplateHelper)
-  end
-else
-  # Berks
-  cookbook_file "#{cookbook_dir}/Berksfile" do
-    action :create_if_missing
-  end
+# Berks
+cookbook_file "#{cookbook_dir}/Berksfile" do
+  action :create_if_missing
 end
 
 # rubocop
@@ -92,15 +72,7 @@ end
 
 # Test Kitchen
 template "#{cookbook_dir}/kitchen.yml" do
-  if context.kitchen == 'dokken'
-    # kitchen-dokken configuration works with berkshelf and policyfiles
-    source 'kitchen_dokken.yml.erb'
-  elsif context.use_policyfile
-    source 'kitchen_policyfile.yml.erb'
-  else
-    source 'kitchen.yml.erb'
-  end
-
+  source 'kitchen.yml.erb'
   helpers(ChefCLI::Generator::TemplateHelper)
   action :create_if_missing
 end
@@ -136,12 +108,7 @@ directory "#{cookbook_dir}/spec/unit/recipes" do
 end
 
 cookbook_file "#{cookbook_dir}/spec/spec_helper.rb" do
-  if context.use_policyfile
-    source 'spec_helper_policyfile.rb'
-  else
-    source 'spec_helper.rb'
-  end
-
+  source 'spec_helper.rb'
   action :create_if_missing
 end
 
@@ -168,7 +135,7 @@ if context.have_git
     generator_desc('Committing cookbook files to git')
 
     execute('initialize-git') do
-      command('git init .')
+      command('git init -b main .')
       cwd cookbook_dir
     end
 
@@ -176,6 +143,7 @@ if context.have_git
 
   cookbook_file "#{cookbook_dir}/.gitignore" do
     source 'gitignore'
+    action :create_if_missing
   end
 
   unless context.skip_git_init

@@ -1,0 +1,38 @@
+# AGENTS.md
+
+Context for AI assistants working in this cookbook.
+
+## What this cookbook does
+
+TODO: what <%= cookbook_name %> manages, its public resources or recipes, and
+who consumes it. Add a section for each design decision a reader could not
+work out from the code.
+
+## Toolchain
+
+- **Cookstyle:** `cinc exec cookstyle` (not raw `cookstyle`). `-a` to auto-fix.
+- **ChefSpec:** `rm -f Berksfile.lock` first, then `cinc exec rspec` from the
+  cookbook root.
+- **rake:** the README's `rake` runs cookstyle and ChefSpec together for
+  humans; run the two commands directly.
+- **Kitchen:** `kitchen.yml` uses the **`cinc_infra`** provisioner; do not
+  "modernize" it to `chef_infra` with `product_name: cinc`, that is the org
+  convention. `kitchen.openstack.yml` and `kitchen.dokken.yml` are driver
+  overlays selected with `KITCHEN_LOCAL_YAML`.
+
+## Versioning and CHANGELOG
+
+Do not bump `metadata.rb`'s `version` manually, and do not add `CHANGELOG.md`
+entries. The OSL Jenkins pipeline owns both: a `bump/*` label on the PR sets
+the version, and the CHANGELOG entry comes from the PR title.
+
+`supports` keys on the platform name, so a second `supports 'almalinux'` line
+silently replaces the first. Use one line with a range.
+
+## Quick checks before opening a PR
+
+```bash
+cinc exec cookstyle
+rm -f Berksfile.lock && cinc exec rspec
+cinc exec inspec check test/integration/default
+```

@@ -1,13 +1,7 @@
 module <%= @cookbook_class_name %>
   module Cookbook
     module <%= @helper_class_name %>
-      #
-      # Define the methods that you would like to assist the work you do in recipes,
-      # resources, or templates.
-      #
-      # def my_helper_method
-      #   # help method implementation
-      # end
+      # Prefix helper names with the cookbook name, e.g. <%= cookbook_name.tr('-', '_') %>_installed?
     end
   end
 end

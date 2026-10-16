@@ -104,6 +104,7 @@ Policyfile.lock.json
 
 # Documentation #
 #############
+AGENTS.md
 CODE_OF_CONDUCT*
 CONTRIBUTING*
 documentation/*

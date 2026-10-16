@@ -1,0 +1,17 @@
+require_relative '../../spec_helper'
+
+describe '<%= @fixture_name %>::<%= @resource_name %>' do
+  ALL_PLATFORMS.each do |p|
+    context "#{p[:platform]} #{p[:version]}" do
+      cached(:chef_run) do
+        ChefSpec::SoloRunner.new(p.dup.merge(step_into: %w(<%= @resource_name %>))).converge(described_recipe)
+      end
+
+      it 'converges successfully' do
+        expect { chef_run }.to_not raise_error
+      end
+
+      it { expect(chef_run).to create_<%= @resource_name %>('default') }
+    end
+  end
+end

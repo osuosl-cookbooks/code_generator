@@ -1,5 +1,6 @@
 context = ChefCLI::Generator.context
-cookbook_dir = File.join(context.cookbook_root, context.cookbook_name)
+osl_defaults!(context)
+cookbook_dir = osl_cookbook_dir!(context)
 recipe_path = File.join(cookbook_dir, 'recipes', "#{context.new_file_basename}.rb")
 spec_helper_path = File.join(cookbook_dir, 'spec', 'spec_helper.rb')
 spec_dir = File.join(cookbook_dir, 'spec', 'unit', 'recipes')
@@ -7,19 +8,6 @@ spec_path = File.join(spec_dir, "#{context.new_file_basename}_spec.rb")
 inspec_dir = File.join(cookbook_dir, 'test', 'integration', context.new_file_basename)
 inspec_control = File.join(inspec_dir, 'controls', "#{context.new_file_basename}.rb")
 inspec_yaml = File.join(inspec_dir, 'inspec.yml')
-
-context.license = 'apachev2'
-context.copyright_holder = 'Oregon State University'
-
-if File.directory?(File.join(cookbook_dir, 'test', 'recipes'))
-  Chef::Log.deprecation <<~EOH
-    It appears that you have InSpec tests located at "test/recipes". This location can
-    cause issues with Foodcritic and has been deprecated in favor of "test/integration/default".
-    Please move your existing InSpec tests to the newly created "test/integration/default"
-    directory, and update the 'inspec_tests' value in your kitchen.yml file(s) to
-    point to "test/integration/default".
-  EOH
-end
 
 # Chefspec
 directory spec_dir do
@@ -57,4 +45,5 @@ end
 template recipe_path do
   source 'recipe.rb.erb'
   helpers(ChefCLI::Generator::TemplateHelper)
+  action :create_if_missing
 end

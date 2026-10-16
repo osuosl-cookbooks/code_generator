@@ -16,9 +16,20 @@ TODO: Enter the cookbook description here.
 
 ## Recipes
 
+## Testing
+
+```console
+$ rake
+$ kitchen test
+```
+
+`rake` runs Cookstyle and ChefSpec. `KITCHEN_LOCAL_YAML=kitchen.dokken.yml kitchen test` runs every suite in Docker
+containers. OSL staff working on the workstations should use `KITCHEN_GLOBAL_YAML` and run `kitchen test` directly, as outlined in our internal docs.
+
 ## Contributing
 
-1. Fork the repository on GitHub
+If you are a non-OSL contributor, welcome! Please start by [forking](https://docs.github.com/en/pull-requests/how-tos/work-with-forks/fork-a-repo) the repository.
+
 1. Create a named feature branch (like `username/add_component_x`)
 1. Write tests for your change
 1. Write your change
